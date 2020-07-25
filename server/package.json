@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-datasource": "^0.7.2",
+    "apollo-server": "^2.16.0",
+    "dotenv": "^8.2.0",
+    "graphql": "^15.3.0",
+    "isemail": "^3.2.0",
+    "pg": "^8.3.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.26",
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^6.2.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  }
+}
