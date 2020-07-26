@@ -73,6 +73,8 @@ const graphQLTypes = gql`
       cancelTrip(launchId: ID!): TripUpdateResponse!
       login(email: String): String # login token
         createPhotoAlbum(input: PhotoAlbumInput): PhotoAlbum
+        updatePhotoAlbum(id: ID, input: PhotoAlbumInput): PhotoAlbum
+        deletePhotoAlbum(id: ID): Boolean
     }
 
     type TripUpdateResponse {
