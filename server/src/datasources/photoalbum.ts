@@ -1,4 +1,6 @@
 const { DataSource } = require('apollo-datasource');
+const { Op: SQL } = require('sequelize'); 
+import { RequestQuery } from '../../types/index.d';
 
 class PhotoAlbumAPI extends DataSource {
     constructor(store) {
@@ -19,6 +21,45 @@ class PhotoAlbumAPI extends DataSource {
     async create(attributes) {
         const result = await this.store.PhotoAlbum.create(attributes);
         return result;
+    }
+
+    async getAll(query: RequestQuery) {
+        let options: {[key: string]: any} = {
+            attributes: ['id', 'name', 'description'],
+            order: [
+                ['id', 'ASC']  
+            ],
+        }
+        // TODO: Validate pagination params
+        let { pageSize, before, after } = query;
+        if (before && after) {
+            throw Error('You can only pass either before or after param, not both');
+        }
+        if (!pageSize) pageSize = 20;
+
+        // An additional result to get the 'next' cursor
+        options.limit = pageSize + 1;
+        if (before) {
+            options.where = {id: {[SQL.lte]: before} }
+        } else if (after) {
+            options.where = {id: {[SQL.gte]: after} }
+        }
+
+        const albumList: Array<any> = await this.store.PhotoAlbum.findAll(options)
+
+        // Last page
+        if (albumList.length <= pageSize) {
+            return {
+                cursor: '',
+                albums: albumList,
+            }
+        } else {
+            const results = albumList.slice(0, albumList.length-1);
+            return {
+                cursor: albumList[albumList.length-1].id,
+                albums: results,
+            }
+        }
     }
 
     async update(id, attributes) {
