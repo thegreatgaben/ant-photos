@@ -57,10 +57,22 @@ const graphQLTypes = gql`
       launches: [Launch]!
     }
 
+    type PhotoAlbum {
+        id: ID!
+        name: String!
+        description: String!
+    }
+
+    input PhotoAlbumInput {
+        name: String!
+        description: String!
+    }
+
     type Mutation {
       bookTrips(launchIds: [ID]!): TripUpdateResponse!
       cancelTrip(launchId: ID!): TripUpdateResponse!
       login(email: String): String # login token
+        createPhotoAlbum(input: PhotoAlbumInput): PhotoAlbum
     }
 
     type TripUpdateResponse {

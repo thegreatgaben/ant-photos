@@ -1,24 +1,20 @@
 require('dotenv').config();
 
 const { ApolloServer } = require('apollo-server');
-const { sequelize } = require('../models');
+const database = require('../models');
 const typeDefs = require('./schema');
-const { createStore } = require('./utils');
 const resolvers = require('./resolvers');
 
-const UserAPI = require('./datasources/user');
+import PhotoAlbumAPI from './datasources/photoalbum';
 
-console.log(sequelize);
-/*
 const server = new ApolloServer({
     typeDefs,
     resolvers,
     dataSources: () => ({
-        userAPI: new UserAPI({ store }),
+        photoAlbumAPI: new PhotoAlbumAPI(database),
     })
 });
 
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
-*/
