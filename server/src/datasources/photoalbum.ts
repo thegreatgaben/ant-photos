@@ -1,6 +1,6 @@
 const { DataSource } = require('apollo-datasource');
-const { Op: SQL } = require('sequelize'); 
 import { RequestQuery } from '../../types/index.d';
+import { getAllWithPagination } from '../utils';
 
 class PhotoAlbumAPI extends DataSource {
     constructor(store) {
@@ -30,31 +30,8 @@ class PhotoAlbumAPI extends DataSource {
                 ['id', 'ASC']  
             ],
         }
-        // TODO: Validate pagination params
-        let { pageSize, after } = query;
-        if (!pageSize) pageSize = 20;
-
-        // An additional result to get the 'next' cursor
-        options.limit = pageSize + 1;
-        if (after) {
-            options.where = {id: {[SQL.gte]: after} }
-        }
-
-        const albumList: Array<any> = await this.store.PhotoAlbum.findAll(options)
-
-        // Last page
-        if (albumList.length <= pageSize) {
-            return {
-                cursor: '',
-                albums: albumList,
-            }
-        } else {
-            const results = albumList.slice(0, albumList.length-1);
-            return {
-                cursor: albumList[albumList.length-1].id,
-                albums: results,
-            }
-        }
+        const results = await getAllWithPagination(this.store.PhotoAlbum, options, query);
+        return results;
     }
 
     async update(id, attributes) {

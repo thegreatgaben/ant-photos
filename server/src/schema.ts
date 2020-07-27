@@ -33,9 +33,11 @@ const graphQLTypes = gql`
         photoAlbumList( 
             pageSize: Int
             after: String
-            before: String
         ): PhotoAlbumConnection!
-        files: [String]
+        photoList(
+            pageSize: Int
+            after: String
+        ): PhotoConnection!
     }
 
     input PhotoAlbumInput {

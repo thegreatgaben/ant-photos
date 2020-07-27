@@ -4,3 +4,8 @@ export interface RequestQuery {
     after?: string;
 }
 
+export interface PaginationResponse {
+    cursor: string;
+    paginatedList: any[];
+}
+

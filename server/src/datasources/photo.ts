@@ -1,3 +1,5 @@
+import { RequestQuery } from "../../types";
+import {getAllWithPagination} from "../utils";
 const { DataSource } = require('apollo-datasource');
 
 class PhotoAPI extends DataSource {
@@ -19,6 +21,16 @@ class PhotoAPI extends DataSource {
     async createMany(fileStatsList) {
         const photoList = await this.store.Photo.bulkCreate(fileStatsList);
         return photoList;
+    }
+
+    async getAll(query: RequestQuery) {
+        let options: {[key: string]: any} = {
+            order: [
+                ['id', 'DESC']  
+            ],
+        }
+        const results = await getAllWithPagination(this.store.Photo, options, query);
+        return results;
     }
 }
 

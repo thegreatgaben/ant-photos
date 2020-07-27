@@ -3,6 +3,7 @@ const { createWriteStream, statSync } = require('fs');
 import crypto from 'crypto';
 
 import { FileUpload } from 'graphql-upload';
+import { PaginationResponse } from '../types/index.d';
 
 interface UploadedFiles {
     files: Promise<FileUpload>[];
@@ -11,10 +12,19 @@ interface UploadedFiles {
 module.exports = {
     Query: {
         photoAlbumList: async (_, query, { dataSources }) => {
-            const allAlbums = await dataSources.photoAlbumAPI.getAll(query);
-            return allAlbums;
+            const result: PaginationResponse = await dataSources.photoAlbumAPI.getAll(query);
+            return {
+                cursor: result.cursor,
+                albums: result.paginatedList,
+            };
         },
-        files: () => [],
+        photoList: async (_, query, { dataSources }) => {
+            const result: PaginationResponse = await dataSources.photoAPI.getAll(query);
+            return {
+                cursor: result.cursor,
+                photos: result.paginatedList,
+            };
+        }
     },
     Mutation: {
         createPhotoAlbum: async (_, { input }, { dataSources }) => {
