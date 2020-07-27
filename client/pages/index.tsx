@@ -1,7 +1,9 @@
+import PhotoList from "../components/PhotoList";
+
 export default function Home() {
     return (
         <>
-            <div>Hello World</div>
+            <PhotoList/>
         </>
     );
 }
