@@ -11,10 +11,16 @@ const resolvers = require('./resolvers');
 import PhotoAlbumAPI from './datasources/photoalbum';
 import PhotoAPI from './datasources/photo';
 
-const uploadPath = path.join(__dirname, '../public/photos');
+const uploadPath = {
+    relative: 'public/photos',
+    absolute: path.join(__dirname, '../public/photos'),
+}
 
 const server = new ApolloServer({
-    context: () => ({ uploadPath }),
+    context: ({ req }) => {
+        const hostname = (req.headers && req.headers.host) || '';
+        return { uploadPath, hostname };
+    },
     typeDefs,
     resolvers,
     dataSources: () => ({
@@ -23,7 +29,7 @@ const server = new ApolloServer({
     })
 });
 const app = express();
-app.use('/photos', express.static(uploadPath));
+app.use(express.static(path.join(__dirname, 'public')));
 server.applyMiddleware({ app });
 
 const port = process.env.APP_PORT;

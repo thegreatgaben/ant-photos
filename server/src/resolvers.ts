@@ -1,5 +1,5 @@
 const path = require('path');
-const { createWriteStream } = require('fs');
+const { createWriteStream, statSync } = require('fs');
 
 import { FileUpload } from 'graphql-upload';
 
@@ -43,14 +43,28 @@ module.exports = {
 
         // Handle an array of uploaded photos asynchronously
         uploadPhotos: async (_, { files }: UploadedFiles, { dataSources }) => {
-            const { uploadPath } = dataSources.photoAPI.context;
+            const { uploadPath, hostname } = dataSources.photoAPI.context;
 
             const handleUploadedFile = async (upload: Promise<FileUpload>) => {
-                const { createReadStream, filename } = await upload; 
+                const { createReadStream, filename, mimetype } = await upload; 
+                const filePath = {
+                    relative: path.join(uploadPath.relative, filename),
+                    absolute: path.join(uploadPath.absolute, filename),
+                }
+                const index = filePath.relative.indexOf('/');
+                const urlPath = filePath.relative.substr(index);
+
                 return new Promise((resolve, reject) => 
                     createReadStream()
-                    .pipe(createWriteStream(path.join(uploadPath, filename)))
-                    .on('close', () => resolve(filename))
+                    .pipe(createWriteStream(filePath.absolute))
+                    .on('close', () => resolve({ 
+                        filename, 
+                        mimetype,
+                        filepath: filePath.relative,
+                        filesize: statSync(filePath.absolute).size,
+                        disk: 'local',
+                        url: hostname + urlPath,
+                    }))
                     .on('error', error => reject(error))
                 );
             }

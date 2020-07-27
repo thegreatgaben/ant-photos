@@ -1,6 +1,34 @@
 const { gql } = require('apollo-server-express');
 
 const graphQLTypes = gql`
+    type PhotoAlbum {
+        id: ID!
+        name: String!
+        description: String!
+    }
+
+    type PhotoAlbumConnection { 
+      cursor: String!
+      albums: [PhotoAlbum]!
+    }
+
+    type Photo {
+        id: ID!
+        filename: String!
+        filepath: String!
+        filesize: Int
+        disk: String!
+        mimetype: String!
+        url: String!
+        caption: String
+        albumId: ID
+    }
+
+    type PhotoConnection {
+        cursor: String!
+        photos: [Photo]!
+    }
+
     type Query {
         photoAlbumList( 
             pageSize: Int
@@ -8,22 +36,6 @@ const graphQLTypes = gql`
             before: String
         ): PhotoAlbumConnection!
         files: [String]
-    }
-
-    """
-    Simple wrapper around our list of launches that contains a cursor to the
-    last item in the list. Pass this cursor to the launches query to fetch results
-    after these.
-    """
-    type PhotoAlbumConnection { 
-      cursor: String!
-      albums: [PhotoAlbum]!
-    }
-
-    type PhotoAlbum {
-        id: ID!
-        name: String!
-        description: String!
     }
 
     input PhotoAlbumInput {
@@ -35,9 +47,9 @@ const graphQLTypes = gql`
         createPhotoAlbum(input: PhotoAlbumInput): PhotoAlbum
         updatePhotoAlbum(id: ID, input: PhotoAlbumInput): PhotoAlbum
         deletePhotoAlbum(id: ID): Boolean
+
         uploadPhotos(files: [Upload]!): Boolean
     }
-
 `;
 
 module.exports = graphQLTypes;
