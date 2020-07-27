@@ -31,17 +31,12 @@ class PhotoAlbumAPI extends DataSource {
             ],
         }
         // TODO: Validate pagination params
-        let { pageSize, before, after } = query;
-        if (before && after) {
-            throw Error('You can only pass either before or after param, not both');
-        }
+        let { pageSize, after } = query;
         if (!pageSize) pageSize = 20;
 
         // An additional result to get the 'next' cursor
         options.limit = pageSize + 1;
-        if (before) {
-            options.where = {id: {[SQL.lte]: before} }
-        } else if (after) {
+        if (after) {
             options.where = {id: {[SQL.gte]: after} }
         }
 

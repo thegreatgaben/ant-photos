@@ -2,11 +2,12 @@ const { gql } = require('apollo-server');
 
 const graphQLTypes = gql`
     type Query {
-      photoAlbumList( 
-        pageSize: Int
-        after: String
-        before: String
-      ): PhotoAlbumConnection!
+        photoAlbumList( 
+            pageSize: Int
+            after: String
+            before: String
+        ): PhotoAlbumConnection!
+        files: [String]
     }
 
     """
@@ -34,6 +35,7 @@ const graphQLTypes = gql`
         createPhotoAlbum(input: PhotoAlbumInput): PhotoAlbum
         updatePhotoAlbum(id: ID, input: PhotoAlbumInput): PhotoAlbum
         deletePhotoAlbum(id: ID): Boolean
+        uploadPhotos(files: [Upload]!): Boolean
     }
 
 `;

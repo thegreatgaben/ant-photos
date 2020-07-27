@@ -1,18 +1,14 @@
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import fetch from 'node-fetch';
-import { createHttpLink } from 'apollo-link-http';
+import { createUploadLink } from 'apollo-upload-client';
 import { ApolloProvider } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 
 import '../styles/global.css'
 
 function createApolloClient() {
     return new ApolloClient({
-        link: createHttpLink({
-            uri: 'http://localhost:4000/',
-            fetch: fetch,
-        }),
+        link: createUploadLink({ uri: 'http://localhost:4000/' }),
         cache: new InMemoryCache(),
     });
 }

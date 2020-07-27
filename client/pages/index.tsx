@@ -1,40 +1,41 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useCallback } from 'react';
+import { useDropzone } from "react-dropzone";
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-const GET_LAUNCHES = gql`
-  query launchList($after: String) {
-    launches(after: $after) {
-      cursor
-      hasMore
-      launches {
-        id
-        isBooked
-        rocket {
-          id
-          name
-        }
-        mission {
-          name
-          missionPatch
-        }
-      }
-    }
+import { filesQuery, Files } from '../components/Files';
+
+const uploadFileMutation = gql`
+  mutation UploadFile($files: [Upload]!) {
+    uploadPhotos(files: $files)
   }
 `;
 
-const Home = ({ launches })=> {
-    console.log(launches);
+const Home = () => {
+    const [uploadFile] = useMutation(uploadFileMutation, {
+        refetchQueries: [{ query: filesQuery }]
+    });
+    const onDrop = useCallback(
+        (files) => {
+            uploadFile({ variables: { files } });
+        },
+        [uploadFile]
+    );
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
     return (
-        <div>This is Home.</div>
+        <>
+            <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                {isDragActive ? (
+                    <p>Drop the files here ...</p>
+                ) : (
+                    <p>Drag 'n' drop some files here, or click to select files</p>
+                )}
+            </div>
+            <Files/>
+        </>
     );
 }
 
-const LaunchesQuery = () => {
-    const { loading, error, data } = useQuery(GET_LAUNCHES);
-    if (loading) return <div>Loading...</div>
-    if (error) return <div>Error!</div>
-
-    return <Home launches={data.launches} />;
-}
-
-export default LaunchesQuery;
+export default Home;
