@@ -42,12 +42,14 @@ module.exports = {
         }, 
 
         // Handle an array of uploaded photos asynchronously
-        uploadPhotos: async (_, { files }: UploadedFiles) => {
+        uploadPhotos: async (_, { files }: UploadedFiles, { dataSources }) => {
+            const { uploadPath } = dataSources.photoAPI.context;
+
             const handleUploadedFile = async (upload: Promise<FileUpload>) => {
                 const { createReadStream, filename } = await upload; 
                 return new Promise((resolve, reject) => 
                     createReadStream()
-                    .pipe(createWriteStream(path.join(__dirname, "../images", filename)))
+                    .pipe(createWriteStream(path.join(uploadPath, filename)))
                     .on('close', () => resolve(filename))
                     .on('error', error => reject(error))
                 );
