@@ -11,7 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-        Photo.belongsTo(models.PhotoAlbum);
+        Photo.belongsTo(models.PhotoAlbum, {
+            foreignKey: {
+                name: 'albumId',
+                allowNull: true,
+            }
+        });
     }
   };
   Photo.init({

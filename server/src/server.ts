@@ -29,7 +29,7 @@ const server = new ApolloServer({
     })
 });
 const app = express();
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/photos', express.static(uploadPath.absolute));
 server.applyMiddleware({ app });
 
 const port = process.env.APP_PORT;

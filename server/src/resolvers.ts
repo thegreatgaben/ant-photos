@@ -1,5 +1,6 @@
 const path = require('path');
 const { createWriteStream, statSync } = require('fs');
+import crypto from 'crypto';
 
 import { FileUpload } from 'graphql-upload';
 
@@ -47,9 +48,14 @@ module.exports = {
 
             const handleUploadedFile = async (upload: Promise<FileUpload>) => {
                 const { createReadStream, filename, mimetype } = await upload; 
+
+                const origFilename = filename;
+                const fileExt = origFilename.split('.')[1];
+                const newFilename = `${crypto.randomBytes(20).toString('hex')}.${fileExt}`;
+
                 const filePath = {
-                    relative: path.join(uploadPath.relative, filename),
-                    absolute: path.join(uploadPath.absolute, filename),
+                    relative: path.join(uploadPath.relative, newFilename),
+                    absolute: path.join(uploadPath.absolute, newFilename),
                 }
                 const index = filePath.relative.indexOf('/');
                 const urlPath = filePath.relative.substr(index);
@@ -58,21 +64,39 @@ module.exports = {
                     createReadStream()
                     .pipe(createWriteStream(filePath.absolute))
                     .on('close', () => resolve({ 
-                        filename, 
-                        mimetype,
-                        filepath: filePath.relative,
-                        filesize: statSync(filePath.absolute).size,
-                        disk: 'local',
-                        url: hostname + urlPath,
+                        origFilename: origFilename,
+                        fileStats: {
+                            mimetype,
+                            filename: newFilename, 
+                            filepath: filePath.relative,
+                            filesize: statSync(filePath.absolute).size,
+                            disk: 'local',
+                            url: hostname + urlPath,
+                        }
                     }))
                     .on('error', error => reject(error))
                 );
             }
 
             const resultList = await Promise.allSettled(files.map(handleUploadedFile));
-            resultList.forEach((result: PromiseSettledResult<any>) => console.log(result));
 
-            return true;
+            let response = [];
+            // @ts-ignore
+            const succeeded = resultList.reduce((filtered, result) => {
+                if (result.status === 'fulfilled') {
+                    // @ts-ignore
+                    filtered.push(result.value.fileStats);
+                    // @ts-ignore
+                    response.push({ filename: result.value.origFilename, uploaded: true })
+                } else {
+                    // @ts-ignore
+                    response.push({ filename: result.value.origFilename, uploaded: false })
+                }
+                return filtered;
+            }, []);
+            await dataSources.photoAPI.createMany(succeeded);
+
+            return response;
         }
     },
 };

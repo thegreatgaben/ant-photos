@@ -16,7 +16,9 @@ class PhotoAPI extends DataSource {
         this.context = config.context;
     }
 
-    async create() {
+    async createMany(fileStatsList) {
+        const photoList = await this.store.Photo.bulkCreate(fileStatsList);
+        return photoList;
     }
 }
 
