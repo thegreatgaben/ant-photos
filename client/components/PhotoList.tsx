@@ -1,10 +1,13 @@
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import {useState} from 'react';
+import { useState } from 'react';
 
 import style from './PhotoList.module.scss';
+import {Empty} from 'antd';
 
-const getPhotosQuery = gql`
+export const defaultRequestQuery = {pageSize: 10};
+
+export const getPhotosQuery = gql`
     query ($pageSize: Int, $after: String) {
         photoList(pageSize: $pageSize, after: $after) {
             cursor
@@ -19,7 +22,7 @@ const getPhotosQuery = gql`
 `;
 
 const PhotosList = () => {
-    const [query, setQuery] = useState({pageSize: 10});
+    const [query, setQuery] = useState(defaultRequestQuery);
     const {loading, error, data} = useQuery(getPhotosQuery, { variables: query });
 
     if (loading) return <div>Loading...</div>;
@@ -28,11 +31,22 @@ const PhotosList = () => {
     const photoList = data.photoList.photos;
 
     return (
-        <div className={style.photoListContainer}>
-            {photoList.map(photo => { 
-                return <img style={{height: 250, padding: 10}} src={`http://${photo.url}`}/>
-            })}
-        </div>
+        <>
+            {
+                photoList.length === 0 ?
+                <Empty 
+                    className={style.photoListEmpty}
+                    image="/images/photos_empty.svg"
+                    description="Put all your memories in a safe place here. Upload some photos now."
+                />
+                :
+                <div className={style.photoListContainer}>
+                    {photoList.map(photo => { 
+                        return <img key={photo.id} className={style.photoItem} src={photo.url}/>
+                    })}
+                </div>
+            }
+        </>
     );
 }
 

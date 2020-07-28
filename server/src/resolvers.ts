@@ -54,7 +54,7 @@ module.exports = {
 
         // Handle an array of uploaded photos asynchronously
         uploadPhotos: async (_, { files }: UploadedFiles, { dataSources }) => {
-            const { uploadPath, hostname } = dataSources.photoAPI.context;
+            const { uploadPath, serverBaseUrl } = dataSources.photoAPI.context;
 
             const handleUploadedFile = async (upload: Promise<FileUpload>) => {
                 const { createReadStream, filename, mimetype } = await upload; 
@@ -81,7 +81,7 @@ module.exports = {
                             filepath: filePath.relative,
                             filesize: statSync(filePath.absolute).size,
                             disk: 'local',
-                            url: hostname + urlPath,
+                            url: serverBaseUrl + urlPath,
                         }
                     }))
                     .on('error', error => reject(error))

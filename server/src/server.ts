@@ -19,7 +19,9 @@ const uploadPath = {
 const server = new ApolloServer({
     context: ({ req }) => {
         const hostname = (req.headers && req.headers.host) || '';
-        return { uploadPath, hostname };
+        let serverBaseUrl = '';
+        if (hostname.length > 0) serverBaseUrl = `${req.protocol}://${hostname}`;
+        return { uploadPath, serverBaseUrl };
     },
     typeDefs,
     resolvers,

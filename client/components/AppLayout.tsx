@@ -1,21 +1,30 @@
-import { Layout, Menu } from 'antd';
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { Layout, Menu, Button } from 'antd';
+import { UserOutlined, LaptopOutlined, NotificationOutlined, UploadOutlined } from '@ant-design/icons';
 
 import style from './AppLayout.module.scss';
+import UploadModal from './UploadModal';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 export default function AppLayout({ children }) {
+    const [showUploadModal, setShowUploadModal] = useState(false);
+
     return (
         <Layout className={style.layout}>
             <Header className="header">
                 <div className="logo" />
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-                    <Menu.Item key="1">nav 1</Menu.Item>
-                    <Menu.Item key="2">nav 2</Menu.Item>
-                    <Menu.Item key="3">nav 3</Menu.Item>
-                </Menu>
+                <div className={style.headerRightCol}>
+                    <Button icon={<UploadOutlined/>} type="primary" onClick={() => setShowUploadModal(true)}>
+                        Upload
+                    </Button>
+                    <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+                        <Menu.Item key="1">nav 1</Menu.Item>
+                        <Menu.Item key="2">nav 2</Menu.Item>
+                        <Menu.Item key="3">nav 3</Menu.Item>
+                    </Menu>
+                </div>
             </Header>
             <Layout>
                 <Sider width={200} className="site-layout-background">
@@ -54,6 +63,10 @@ export default function AppLayout({ children }) {
                                 minHeight: 280,
                         }}
                     >
+                        <UploadModal 
+                            visible={showUploadModal}
+                            setVisibility={(flag) => setShowUploadModal(flag)}
+                        />
                         {children}
                     </Content>
                 </Layout>
