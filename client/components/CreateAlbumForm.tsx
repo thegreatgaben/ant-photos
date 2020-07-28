@@ -87,7 +87,7 @@ export default function CreateAlbumForm({ form }: CreateAlbumFormProps) {
                     }
                 </Result>
                 :
-                <PhotoUpload onUploadFinish={(status, response) => {
+                <PhotoUpload skipRefetch={true} onUploadFinish={(status, response) => {
                     if (status) {
                         let allUploadSuccess = true;
                         let failures = [];

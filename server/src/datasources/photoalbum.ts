@@ -27,7 +27,7 @@ class PhotoAlbumAPI extends DataSource {
         let options: {[key: string]: any} = {
             attributes: ['id', 'name', 'description'],
             order: [
-                ['id', 'ASC']  
+                ['id', 'DESC']  
             ],
         }
         const results = await getAllWithPagination(this.store.PhotoAlbum, options, query);
