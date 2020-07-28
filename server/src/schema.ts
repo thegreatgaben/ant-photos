@@ -53,7 +53,7 @@ const graphQLTypes = gql`
     type Mutation {
         createPhotoAlbum(input: PhotoAlbumInput): PhotoAlbum
         updatePhotoAlbum(id: ID, input: PhotoAlbumInput): PhotoAlbum
-        deletePhotoAlbum(id: ID): Boolean
+        deletePhotoAlbum(id: ID!, deletePhotos: Boolean): Boolean
 
         uploadPhotos(files: [Upload]!): [PhotoUploadedResponse]
     }
