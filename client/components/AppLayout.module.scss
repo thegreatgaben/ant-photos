@@ -2,6 +2,13 @@
     min-height: 100vh !important;
 }
 
+.sider {
+    overflow: auto;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+}
+
 .headerRightCol {
     display: flex;
     justify-content: flex-end;

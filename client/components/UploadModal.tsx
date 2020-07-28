@@ -10,7 +10,7 @@ interface UploadModalProps extends ModalProps {
 export default function UploadModal({setVisibility, ...props}: UploadModalProps) {
     return (
         <Modal 
-            title="Photo Upload"
+            title="Photos Upload"
             width={720} 
             onOk={() => setVisibility(false)}
             onCancel={() => setVisibility(false)} 
@@ -18,11 +18,20 @@ export default function UploadModal({setVisibility, ...props}: UploadModalProps)
             {...props}
         >                    
             <PhotoUpload onUploadFinish={(status, response) => {
-                if (status) message.success('Photos uploaded successfully');
-                else {
+                // TODO: Type the response
+                if (status) {
+                    let allUploadSuccess = true;
+                    // Notify any uploads that failed
                     response.uploadPhotos.forEach(photo => {
-                        if(!photo.uploaded) message.error(`${photo.filename} failed to upload`)
+                        if(!photo.uploaded) {
+                            allUploadSuccess = false;
+                            message.error(`${photo.filename} failed to upload`)
+                        }
                     });
+                    if (allUploadSuccess) message.success('Photos uploaded successfully')
+                }
+                else {
+                    message.error('An error occured in the server.');
                 }
                 setVisibility(false)
             }}/>

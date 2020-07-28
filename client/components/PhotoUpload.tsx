@@ -9,6 +9,7 @@ import {getPhotosQuery, defaultRequestQuery} from './PhotoList';
 
 interface PhotoUploadProps {
     onUploadFinish: (status: boolean, response: any) => void;
+    skipRefetch?: boolean;
 }
 
 const uploadPhotosMutation = gql`
@@ -20,11 +21,13 @@ const uploadPhotosMutation = gql`
   }
 `;
 
-export default function PhotoUpload({ onUploadFinish }: PhotoUploadProps) {
+export default function PhotoUpload({ onUploadFinish, skipRefetch = false }: PhotoUploadProps) {
+    const fetchQueries = skipRefetch ? [] : [{ query: getPhotosQuery, variables: defaultRequestQuery }];
     const [uploadPhotos] = useMutation(uploadPhotosMutation, {
-        refetchQueries: [{ query: getPhotosQuery, variables: defaultRequestQuery }],
+        refetchQueries: fetchQueries,
         onCompleted: (data) => onUploadFinish(true, data),
     });
+
     const onDrop = useCallback(
         (photos) => {
             uploadPhotos({ variables: { files: photos } });
