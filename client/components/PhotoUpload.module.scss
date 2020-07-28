@@ -1,0 +1,10 @@
+.uploadContainer {
+    text-align: center;
+    padding: 10px 0 10px 0;
+    &:hover {
+        cursor: pointer;
+    }
+    span:global(.anticon) {
+        font-size: 90px;
+    }
+}
