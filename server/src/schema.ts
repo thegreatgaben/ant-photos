@@ -47,15 +47,21 @@ const graphQLTypes = gql`
         description: String!
     }
 
+    input PhotoInput {
+        caption: String!
+    }
+
     type PhotoUploadedResponse {
         filename: String!
         uploaded: Boolean!
     }
 
     type Mutation {
-        createPhotoAlbum(input: PhotoAlbumInput): PhotoAlbum
-        updatePhotoAlbum(id: ID, input: PhotoAlbumInput): PhotoAlbum
+        createPhotoAlbum(input: PhotoAlbumInput!): PhotoAlbum
+        updatePhotoAlbum(id: ID!, input: PhotoAlbumInput!): PhotoAlbum
         deletePhotoAlbum(id: ID!, deletePhotos: Boolean): Boolean
+
+        updatePhoto(id: ID!, input: PhotoInput!): Photo
 
         uploadPhotos(files: [Upload]!, albumId: ID): [PhotoUploadedResponse]
     }

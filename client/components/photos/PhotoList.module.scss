@@ -17,6 +17,17 @@
         grid-column-end: span 2;
     }
 
+    .photoItem {
+        overflow: hidden;
+        img {
+            transition: transform .5s ease;
+        }
+        img:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+    }
+
     img{
         display: flex;
         width: 100%;

@@ -41,6 +41,15 @@ class PhotoAPI extends DataSource {
         const results = await getAllWithPagination(this.store.Photo, options, query);
         return results;
     }
+
+    async update(id, attributes) {
+        const options = {
+            where: { id: id }
+        };
+        await this.store.Photo.update(attributes, options);
+        const result = await this.store.Photo.findOne(options);
+        return result;
+    }
 }
 
 export default PhotoAPI;

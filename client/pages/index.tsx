@@ -51,7 +51,7 @@ export default function Home() {
                 }}/>
             </Modal>
 
-            <PhotoList photoList={data.photoList.photos}/>
+            <PhotoList photoList={data.photoList.photos} fetchQueries/>
         </>
     );
 }

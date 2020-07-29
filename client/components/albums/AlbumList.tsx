@@ -103,6 +103,7 @@ export default function AlbumList() {
                                         ]}
                                     >
                                         <Card.Meta 
+                                            // @ts-ignore
                                             onClick={() => router.push(`/albums/${album.id}?name=${album.name}`)}
                                             title={album.name} 
                                             description={album.description} 

@@ -11,6 +11,7 @@ export const getPhotosQuery = gql`
                 filename
                 mimetype
                 url
+                caption
             }
         }
     }

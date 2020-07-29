@@ -53,6 +53,11 @@ module.exports = {
             }
         }, 
 
+        updatePhoto: async (_, { id, input }, { dataSources }) => {
+            const photo = await dataSources.photoAPI.update(id, input);
+            return photo;
+        },
+
         // Handle an array of uploaded photos asynchronously
         uploadPhotos: async (_, { files, albumId }: UploadedFiles, { dataSources }) => {
             const { uploadPath, serverBaseUrl } = dataSources.photoAPI.context;
