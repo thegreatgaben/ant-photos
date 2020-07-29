@@ -20,6 +20,7 @@ export const albumsQuery = gql`
                 id
                 name
                 description
+                coverPhotoUrl
             }
         }
     }
@@ -83,8 +84,13 @@ export default function AlbumList() {
                                     <Card 
                                         hoverable 
                                         style={{ marginBottom: 16 }}
-                                        cover={<img alt="Album Cover Placeholder" src="/images/album_placeholder.jpg"/>}
-                                        onClick={() => router.push(`/albums/${album.id}?name=${album.name}`)}
+                                        cover={
+                                            <img 
+                                                onClick={() => router.push(`/albums/${album.id}?name=${album.name}`)}
+                                                alt={album.name} 
+                                                src={album.coverPhotoUrl || "/images/album_placeholder.jpg"}
+                                            />
+                                        }
                                         actions={[
                                             <EditOutlined onClick={() => {
                                                 setAlbumToEdit(album);
@@ -96,7 +102,11 @@ export default function AlbumList() {
                                             }}/>,
                                         ]}
                                     >
-                                        <Card.Meta title={album.name} description={album.description} />
+                                        <Card.Meta 
+                                            onClick={() => router.push(`/albums/${album.id}?name=${album.name}`)}
+                                            title={album.name} 
+                                            description={album.description} 
+                                        />
                                     </Card>
                                 </Col>
                             )

@@ -5,7 +5,7 @@ const graphQLTypes = gql`
         id: ID!
         name: String!
         description: String!
-        photos: [Photo]
+        coverPhotoUrl: String
     }
 
     type PhotoAlbumConnection { 

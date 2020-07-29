@@ -22,6 +22,9 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
+      coverPhotoUrl: {
+        type: Sequelize.STRING
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

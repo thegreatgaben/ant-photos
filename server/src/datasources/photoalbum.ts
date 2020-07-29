@@ -1,6 +1,7 @@
 const { DataSource } = require('apollo-datasource');
 import { RequestQuery } from '../../types/index.d';
 import { getAllWithPagination } from '../utils';
+import {QueryTypes} from 'sequelize';
 
 class PhotoAlbumAPI extends DataSource {
     constructor(store) {
@@ -25,7 +26,7 @@ class PhotoAlbumAPI extends DataSource {
 
     async getAll(query: RequestQuery) {
         let options: {[key: string]: any} = {
-            attributes: ['id', 'name', 'description'],
+            attributes: ['id', 'name', 'description', 'coverPhotoUrl'],
             order: [
                 ['id', 'DESC']  
             ],
@@ -49,6 +50,14 @@ class PhotoAlbumAPI extends DataSource {
         };
         const result = await this.store.PhotoAlbum.destroy(options);
         return Boolean(result);
+    }
+
+    async countPhotos(id) {
+        const [result] = await this.store.sequelize.query('SELECT COUNT(*) FROM "Photos" where "albumId" = ?', {
+            replacements: [id],
+            type: QueryTypes.SELECT,
+        })
+        return result.count;
     }
 }
 

@@ -26,6 +26,7 @@ export default function PhotoUpload({ onUploadFinish, fetchQueries, extraVariabl
     const [uploadPhotos] = useMutation(uploadPhotosMutation, {
         refetchQueries: fetchQueries,
         onCompleted: (data) => onUploadFinish(true, data),
+        onError: () => onUploadFinish(false, null),
     });
 
     const onDrop = useCallback(

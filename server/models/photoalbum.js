@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
   };
   PhotoAlbum.init({
     name: DataTypes.STRING,
-    description: DataTypes.TEXT
+    description: DataTypes.TEXT,
+    coverPhotoUrl: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'PhotoAlbum',

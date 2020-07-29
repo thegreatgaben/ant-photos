@@ -106,7 +106,22 @@ module.exports = {
                 }
                 return filtered;
             }, []);
-            await dataSources.photoAPI.createMany(succeeded);
+
+            // Make the first photo uploaded to be the default album cover photo
+            let hasCoverPhoto = false;
+            if (albumId) {
+                const albumPhotoCount = await dataSources.photoAlbumAPI.countPhotos(albumId);
+                if (albumPhotoCount == 0) {
+                    succeeded[0].isCoverPhoto = true;
+                }
+                hasCoverPhoto = true;
+            }
+
+            const photoList = await dataSources.photoAPI.createMany(succeeded);
+
+            if (hasCoverPhoto) {
+                await dataSources.photoAlbumAPI.update(albumId, { coverPhotoUrl: photoList[0].url });
+            }
 
             return response;
         }
