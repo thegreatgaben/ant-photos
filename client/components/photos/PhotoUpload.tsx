@@ -5,11 +5,11 @@ import { InboxOutlined } from '@ant-design/icons';
 import gql from 'graphql-tag';
 
 import style from './PhotoUpload.module.scss';
-import {defaultPhotosRequestQuery, getPhotosQuery} from '../utils';
 
 interface PhotoUploadProps {
     onUploadFinish: (status: boolean, response: any) => void;
-    skipRefetch?: boolean;
+    // TODO: Type this
+    fetchQueries: {query: any, variables: any}[];
 }
 
 const uploadPhotosMutation = gql`
@@ -21,8 +21,7 @@ const uploadPhotosMutation = gql`
   }
 `;
 
-export default function PhotoUpload({ onUploadFinish, skipRefetch = false }: PhotoUploadProps) {
-    const fetchQueries = skipRefetch ? [] : [{ query: getPhotosQuery, variables: defaultPhotosRequestQuery }];
+export default function PhotoUpload({ onUploadFinish, fetchQueries }: PhotoUploadProps) {
     const [uploadPhotos] = useMutation(uploadPhotosMutation, {
         refetchQueries: fetchQueries,
         onCompleted: (data) => onUploadFinish(true, data),

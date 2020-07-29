@@ -1,12 +1,17 @@
-import PhotosList from "../../photos/PhotoList";
+import {useState} from 'react';
 import {defaultPhotosRequestQuery, getPhotosQuery} from "../../utils";
-import {Typography} from "antd";
+import {message, Typography, Button, Modal} from "antd";
+import {UploadOutlined} from '@ant-design/icons';
 import {useLazyQuery} from "@apollo/react-hooks";
 import {useEffect} from "react";
+
+import PhotosList from "../../photos/PhotoList";
+import PhotoUpload from '../../photos/PhotoUpload';
 
 const { Title } = Typography;
 
 export default function AlbumPhotosList({ album }) {
+    const [showUploadModal, setShowUploadModal] = useState(false);
     const [getAlbumPhotos, {called, loading, error, data}] = useLazyQuery(getPhotosQuery);
 
     useEffect(() => {
@@ -23,10 +28,45 @@ export default function AlbumPhotosList({ album }) {
     if (called && error) return <div>There is an error!</div>;
 
     const photoList = data ? data.photoList.photos : [];
+    const fetchQueries = [{ query: getPhotosQuery, variables: {...defaultPhotosRequestQuery, albumId: album.id } }];
 
     return (        
         <>
             <Title>{album.name}</Title>
+
+            <div className="d-flex justify-content-end align-items-center mb-3">
+                <Button icon={<UploadOutlined/>} type="primary" onClick={() => setShowUploadModal(true)}>
+                    Upload
+                </Button>
+            </div>
+
+            <Modal 
+                title="Photos Upload"
+                width={720} 
+                visible={showUploadModal}
+                onCancel={() => setShowUploadModal(false)} 
+                footer={null}
+            >                    
+                <PhotoUpload fetchQueries={fetchQueries} onUploadFinish={(status, response) => {
+                    // TODO: Type the response
+                    if (status) {
+                        let allUploadSuccess = true;
+                        // Notify any uploads that failed
+                        response.uploadPhotos.forEach(photo => {
+                            if(!photo.uploaded) {
+                                allUploadSuccess = false;
+                                message.error(`${photo.filename} failed to upload`)
+                            }
+                        });
+                        if (allUploadSuccess) message.success('Photos uploaded successfully')
+                    }
+                    else {
+                        message.error('An error occured in the server.');
+                    }
+                    setShowUploadModal(false)
+                }}/>
+            </Modal>
+
             <PhotosList photoList={photoList}/>
         </>
     );
