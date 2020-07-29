@@ -1,37 +1,26 @@
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import { useState } from 'react';
+import {useState} from 'react';
+import {Empty, Button} from 'antd';
+import {UploadOutlined} from '@ant-design/icons';
 
+import UploadModal from './UploadModal';
 import style from './PhotoList.module.scss';
-import {Empty} from 'antd';
 
-export const defaultRequestQuery = {pageSize: 10};
-
-export const getPhotosQuery = gql`
-    query ($pageSize: Int, $after: String) {
-        photoList(pageSize: $pageSize, after: $after) {
-            cursor
-            photos {
-                id
-                filename
-                mimetype
-                url
-            }
-        }
-    }
-`;
-
-const PhotosList = () => {
-    const [query, setQuery] = useState(defaultRequestQuery);
-    const {loading, error, data} = useQuery(getPhotosQuery, { variables: query });
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>There is an error!</div>;
-
-    const photoList = data.photoList.photos;
+export default function PhotosList({ photoList }) {
+    const [showUploadModal, setShowUploadModal] = useState(false);
 
     return (
         <>
+            <div className="d-flex justify-content-end mb-3">
+                <Button icon={<UploadOutlined/>} type="primary" onClick={() => setShowUploadModal(true)}>
+                    Upload
+                </Button>
+            </div>
+
+            <UploadModal 
+                visible={showUploadModal}
+                setVisibility={(flag) => setShowUploadModal(flag)}
+            />
+
             {
                 photoList.length === 0 ?
                 <Empty 
@@ -49,5 +38,3 @@ const PhotosList = () => {
         </>
     );
 }
-
-export default PhotosList;

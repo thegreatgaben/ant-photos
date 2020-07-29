@@ -1,12 +1,14 @@
 import gql from "graphql-tag";
 import {useState} from "react";
 import {useQuery} from "@apollo/react-hooks";
-import {Card, Row, Col, Empty} from "antd";
-import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
+import {Card, Row, Col, Empty, Button} from "antd";
+import {EditOutlined, DeleteOutlined, PlusOutlined} from '@ant-design/icons';
+import CreateAlbumModal from './CreateAlbumModal';
 import EditAlbumModal from "./EditAlbumModal";
 import DeleteAlbumConfirm from "./DeleteAlbumConfirm";
 
 import style from './AlbumList.module.scss';
+import {useRouter} from 'next/router';
 
 export const defaultRequestQuery = {pageSize: 10};
 
@@ -24,6 +26,10 @@ export const albumsQuery = gql`
 `;
 
 export default function AlbumList() {
+    const router = useRouter();
+
+    const [showCreateAlbumModal, setShowCreateAlbumModal] = useState(false);
+
     const [showEditModal, setShowEditModal] = useState(false);
     const [albumToEdit, setAlbumToEdit] = useState({});
 
@@ -40,6 +46,17 @@ export default function AlbumList() {
 
     return (
         <>
+            <div className="d-flex justify-content-end mb-3">
+                <Button icon={<PlusOutlined/>} type="primary" onClick={() => setShowCreateAlbumModal(true)}>
+                    Create Album
+                </Button>
+            </div>
+
+            <CreateAlbumModal 
+                visible={showCreateAlbumModal}
+                setVisibility={(flag) => setShowCreateAlbumModal(flag)}
+            />
+
             {
                 albumList.length === 0 ?
                 <Empty 
@@ -67,6 +84,7 @@ export default function AlbumList() {
                                         hoverable 
                                         style={{ marginBottom: 16 }}
                                         cover={<img alt="Album Cover Placeholder" src="/images/album_placeholder.jpg"/>}
+                                        onClick={() => router.push(`/albums/${album.id}?name=${album.name}`)}
                                         actions={[
                                             <EditOutlined onClick={() => {
                                                 setAlbumToEdit(album);

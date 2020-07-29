@@ -1,42 +1,23 @@
-import { useState } from 'react';
-import { Layout, Menu, Button } from 'antd';
-import { UploadOutlined, FileImageOutlined, FolderOpenOutlined, PlusOutlined } from '@ant-design/icons';
+import {Layout, Menu} from 'antd';
+import {FileImageOutlined, FolderOpenOutlined} from '@ant-design/icons';
 
 import style from './AppLayout.module.scss';
-import UploadModal from './photos/UploadModal';
-import { useRouter } from 'next/router';
-import CreateAlbumModal from './albums/CreateAlbumModal';
+import {useRouter} from 'next/router';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 export default function AppLayout({ children }) {
     const router = useRouter();
-    const [showUploadModal, setShowUploadModal] = useState(false);
-    const [showCreateAlbumModal, setShowCreateAlbumModal] = useState(false);
 
     let selectedMenuItem = ['1'];
-    if (router.pathname === '/albums') selectedMenuItem = ['2'];
+    if (router.pathname.includes('/albums')) selectedMenuItem = ['2'];
 
     return (
         <Layout className={style.layout}>
-            <Header className="header">
-                <div className="logo" />
-                <div className={style.headerRightCol}>
-                    { router.pathname === '/' &&
-                        <Button icon={<UploadOutlined/>} type="primary" onClick={() => setShowUploadModal(true)}>
-                            Upload
-                        </Button>
-                    }
-                    { router.pathname === '/albums' &&
-                        <Button icon={<PlusOutlined/>} type="primary" onClick={() => setShowCreateAlbumModal(true)}>
-                            Create Album
-                        </Button>
-                    }
-                </div>
-            </Header>
             <Layout>
                 <Sider width={200}>
                     <Menu
+                        theme="dark"
                         mode="inline"
                         selectedKeys={selectedMenuItem}
                         style={{ height: '100%', borderRight: 0 }}
@@ -58,14 +39,6 @@ export default function AppLayout({ children }) {
                                 minHeight: 280,
                         }}
                     >
-                        <UploadModal 
-                            visible={showUploadModal}
-                            setVisibility={(flag) => setShowUploadModal(flag)}
-                        />
-                        <CreateAlbumModal 
-                            visible={showCreateAlbumModal}
-                            setVisibility={(flag) => setShowCreateAlbumModal(flag)}
-                        />
                         {children}
                     </Content>
                 </Layout>

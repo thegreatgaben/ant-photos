@@ -2,6 +2,10 @@ import { RequestQuery } from "../../types";
 import {getAllWithPagination} from "../utils";
 const { DataSource } = require('apollo-datasource');
 
+interface PhotosRequestQuery extends RequestQuery {
+    albumId?: string;
+}
+
 class PhotoAPI extends DataSource {
     constructor(store) {
         super();
@@ -23,11 +27,16 @@ class PhotoAPI extends DataSource {
         return photoList;
     }
 
-    async getAll(query: RequestQuery) {
+    async getAll(query: PhotosRequestQuery) {
         let options: {[key: string]: any} = {
             order: [
                 ['id', 'DESC']  
             ],
+        }
+        if (query.albumId) {
+            options.where = {
+                albumId: query.albumId,
+            }
         }
         const results = await getAllWithPagination(this.store.Photo, options, query);
         return results;

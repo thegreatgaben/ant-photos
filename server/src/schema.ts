@@ -37,6 +37,7 @@ const graphQLTypes = gql`
         photoList(
             pageSize: Int
             after: String
+            albumId: ID
         ): PhotoConnection!
     }
 
