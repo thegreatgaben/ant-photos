@@ -61,9 +61,10 @@ const graphQLTypes = gql`
         updatePhotoAlbum(id: ID!, input: PhotoAlbumInput!): PhotoAlbum
         deletePhotoAlbum(id: ID!, deletePhotos: Boolean): Boolean
 
-        updatePhoto(id: ID!, input: PhotoInput!): Photo
-
         uploadPhotos(files: [Upload]!, albumId: ID): [PhotoUploadedResponse]
+        updatePhoto(id: ID!, input: PhotoInput!): Photo
+        deletePhoto(id: ID): Boolean
+
     }
 `;
 

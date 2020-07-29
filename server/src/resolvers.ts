@@ -57,6 +57,14 @@ module.exports = {
             const photo = await dataSources.photoAPI.update(id, input);
             return photo;
         },
+        deletePhoto: async (_, { id }, { dataSources }) => {
+            try {
+                const result = await dataSources.photoAPI.delete(id);
+                return result
+            } catch (error) {
+                return false;
+            }
+        },
 
         // Handle an array of uploaded photos asynchronously
         uploadPhotos: async (_, { files, albumId }: UploadedFiles, { dataSources }) => {

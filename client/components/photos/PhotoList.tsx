@@ -1,4 +1,4 @@
-import {message, Empty, Modal, Form} from 'antd';
+import {message, Empty, Modal, Form, Button, Popconfirm} from 'antd';
 
 import style from './PhotoList.module.scss';
 import {useState, useEffect} from 'react';
@@ -15,6 +15,12 @@ const updatePhotoMutation = gql`
     }
 `;
 
+const deletePhotoMutation = gql`
+    mutation DeletePhoto($id: ID!) {
+        deletePhoto(id: $id)
+    }
+`;
+
 export default function PhotosList({ photoList, fetchQueries }) {
     const [showPhotoModal, setShowPhotoModal] = useState(false);
     const [photoToShow, setPhotoToShow] = useState({});
@@ -22,6 +28,13 @@ export default function PhotosList({ photoList, fetchQueries }) {
         refetchQueries: fetchQueries,
         onCompleted: () => {
             message.success('Photo updated successfully');
+            setShowPhotoModal(false)
+        },
+    });
+    const [deletePhoto] = useMutation(deletePhotoMutation, {
+        refetchQueries: fetchQueries,
+        onCompleted: () => {
+            message.success('Photo deleted successfully');
             setShowPhotoModal(false)
         },
     });
@@ -36,6 +49,12 @@ export default function PhotosList({ photoList, fetchQueries }) {
         //@ts-ignore
         updatePhoto({ variables: { id: photoToShow.id, caption: values.caption } });
     }
+    
+    const onConfirmDelete = () => {
+        //@ts-ignore
+        deletePhoto({ variables: { id: photoToShow.id } });
+        setShowPhotoModal(false);
+    }
 
     return (
         <>
@@ -44,9 +63,19 @@ export default function PhotosList({ photoList, fetchQueries }) {
                 style={{ top: 20 }}
                 visible={showPhotoModal}
                 onCancel={() => setShowPhotoModal(false)}
-                okText="Update"
-                onOk={handlePhotoUpdate}
                 closable={false}
+                footer={
+                    <>
+                        <Button onClick={() => setShowPhotoModal(false)}>Cancel</Button>
+                        <Popconfirm 
+                            title="Are you sure you want to delete this photo?" 
+                            onConfirm={onConfirmDelete}
+                        >
+                            <Button danger>Delete</Button>
+                        </Popconfirm>
+                        <Button type="primary" onClick={handlePhotoUpdate}>Update</Button>
+                    </>
+                }
             >
                 <img src={photoToShow.url}/>
                 <EditPhotoForm form={form}/>
@@ -62,12 +91,12 @@ export default function PhotosList({ photoList, fetchQueries }) {
                 <div className={style.photoListContainer}>
                     {photoList.map(photo => { 
                         return (
-                            <div className={style.photoItem} onClick={() => {
+                            <div key={photo.id} className={style.photoItem} onClick={() => {
                                     setPhotoToShow(photo);
                                     setShowPhotoModal(true);
                                 }}
                             >
-                                <img key={photo.id} src={photo.url}/>
+                                <img src={photo.url}/>
                             </div>
                         )
                     })}

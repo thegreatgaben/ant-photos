@@ -1,5 +1,7 @@
 import { RequestQuery } from "../../types";
 import {getAllWithPagination} from "../utils";
+import fs from 'fs';
+import path from 'path';
 const { DataSource } = require('apollo-datasource');
 
 interface PhotosRequestQuery extends RequestQuery {
@@ -49,6 +51,18 @@ class PhotoAPI extends DataSource {
         await this.store.Photo.update(attributes, options);
         const result = await this.store.Photo.findOne(options);
         return result;
+    }
+
+    async delete(id) {
+        const options = {
+            where: { id: id }
+        };
+        const photo = await this.store.Photo.findOne(options);
+        // Delete photo file
+        fs.unlinkSync(path.join(__dirname, `../../${photo.filepath}`));
+
+        const result = await this.store.Photo.destroy(options);
+        return Boolean(result);
     }
 }
 
