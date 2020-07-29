@@ -4,18 +4,15 @@ import { ModalProps } from 'antd/lib/modal';
 import AlbumForm from './AlbumForm';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
-import {albumsQuery, defaultRequestQuery} from '../pages/albums';
-import {useEffect} from 'react';
+import {albumsQuery, defaultRequestQuery} from './AlbumList';
 
-interface EditAlbumModalProps extends ModalProps {
+interface CreateAlbumModalProps extends ModalProps {
     setVisibility: (flag: boolean) => void;
-    // TODO: Type album
-    album: any;
 }
 
-const updateAlbumMutation = gql`
-    mutation EditAlbum($id: ID!, $name: String!, $description: String!) {
-        updatePhotoAlbum(id: $id, input: {name: $name, description: $description}) {
+const createAlbumMutation = gql`
+    mutation CreateAlbum($name: String!, $description: String!) {
+        createPhotoAlbum(input: {name: $name, description: $description}) {
             id
             name
             description
@@ -23,11 +20,11 @@ const updateAlbumMutation = gql`
     }
 `
 
-export default function EditAlbumModal({setVisibility, album, ...props}: EditAlbumModalProps) {
-    const [updateAlbum] = useMutation(updateAlbumMutation, {
+export default function CreateAlbumModal({setVisibility, ...props}: CreateAlbumModalProps) {
+    const [createAlbum] = useMutation(createAlbumMutation, {
         refetchQueries: [{ query: albumsQuery, variables: defaultRequestQuery }],
         onCompleted: () => {
-            message.success('Album updated successfully');
+            message.success('Album created successfully');
             setVisibility(false);
         }
     });
@@ -35,20 +32,16 @@ export default function EditAlbumModal({setVisibility, album, ...props}: EditAlb
 
     const handleFormSubmit = async () => {
         const values = await form.validateFields();
-        updateAlbum({ variables: {id: album.id, ...values} })
+        createAlbum({ variables: values })
     }
-
-    useEffect(() => {
-        form.setFieldsValue(album);
-    }, [album]);
 
     return (
         <Modal 
-            title="Edit Album"
+            title="Create Album"
             width={720} 
             onCancel={() => setVisibility(false)} 
             {...props}
-            okText="Update"
+            okText="Create"
             onOk={handleFormSubmit}
         >                    
             <AlbumForm form={form}/>

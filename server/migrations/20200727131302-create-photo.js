@@ -46,6 +46,11 @@ module.exports = {
                     key: 'id',
                 }
             },
+            isCoverPhoto: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: false,
+                allowNull: false,
+            }
         });
     },
     down: async (queryInterface, Sequelize) => {

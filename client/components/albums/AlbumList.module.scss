@@ -1,0 +1,8 @@
+.albumListEmpty {
+    div:global(.ant-empty-image) {
+        height: 270px;
+        img {
+            margin: 0 auto;
+        }
+    }
+}

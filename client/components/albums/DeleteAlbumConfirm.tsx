@@ -3,7 +3,7 @@ import {ExclamationCircleOutlined} from '@ant-design/icons';
 import {ModalProps} from 'antd/lib/modal';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
-import {defaultRequestQuery, albumsQuery} from '../pages/albums';
+import {defaultRequestQuery, albumsQuery} from './AlbumList';
 
 interface DeleteAlbumConfirmProps extends ModalProps{
     setVisibility: (flag: boolean) => void;

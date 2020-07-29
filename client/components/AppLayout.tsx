@@ -3,9 +3,9 @@ import { Layout, Menu, Button } from 'antd';
 import { UploadOutlined, FileImageOutlined, FolderOpenOutlined, PlusOutlined } from '@ant-design/icons';
 
 import style from './AppLayout.module.scss';
-import UploadModal from './UploadModal';
+import UploadModal from './photos/UploadModal';
 import { useRouter } from 'next/router';
-import CreateAlbumModal from './CreateAlbumModal';
+import CreateAlbumModal from './albums/CreateAlbumModal';
 
 const { Header, Content, Sider } = Layout;
 

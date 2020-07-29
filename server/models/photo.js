@@ -27,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     mimetype: DataTypes.STRING,
     url: DataTypes.STRING,
     caption: DataTypes.STRING,
-    albumId: DataTypes.INTEGER
+    albumId: DataTypes.INTEGER,
+    isCoverPhoto: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'Photo',
