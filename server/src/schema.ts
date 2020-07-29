@@ -5,6 +5,7 @@ const graphQLTypes = gql`
         id: ID!
         name: String!
         description: String!
+        photos: [Photo]
     }
 
     type PhotoAlbumConnection { 
@@ -56,7 +57,7 @@ const graphQLTypes = gql`
         updatePhotoAlbum(id: ID, input: PhotoAlbumInput): PhotoAlbum
         deletePhotoAlbum(id: ID!, deletePhotos: Boolean): Boolean
 
-        uploadPhotos(files: [Upload]!): [PhotoUploadedResponse]
+        uploadPhotos(files: [Upload]!, albumId: ID): [PhotoUploadedResponse]
     }
 `;
 

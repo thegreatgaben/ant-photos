@@ -10,18 +10,19 @@ interface PhotoUploadProps {
     onUploadFinish: (status: boolean, response: any) => void;
     // TODO: Type this
     fetchQueries: {query: any, variables: any}[];
+    extraVariables?: Object;
 }
 
 const uploadPhotosMutation = gql`
-  mutation UploadPhotos($files: [Upload]!) {
-      uploadPhotos(files: $files) {
+  mutation UploadPhotos($files: [Upload]!, $albumId: ID) {
+      uploadPhotos(files: $files, albumId: $albumId) {
           filename
           uploaded
       }
   }
 `;
 
-export default function PhotoUpload({ onUploadFinish, fetchQueries }: PhotoUploadProps) {
+export default function PhotoUpload({ onUploadFinish, fetchQueries, extraVariables = {} }: PhotoUploadProps) {
     const [uploadPhotos] = useMutation(uploadPhotosMutation, {
         refetchQueries: fetchQueries,
         onCompleted: (data) => onUploadFinish(true, data),
@@ -29,7 +30,7 @@ export default function PhotoUpload({ onUploadFinish, fetchQueries }: PhotoUploa
 
     const onDrop = useCallback(
         (photos) => {
-            uploadPhotos({ variables: { files: photos } });
+            uploadPhotos({ variables: { ...extraVariables, files: photos } });
         },
         [uploadPhotos]
     );

@@ -7,6 +7,7 @@ import { PaginationResponse } from '../types/index.d';
 
 interface UploadedFiles {
     files: Promise<FileUpload>[];
+    albumId: string;
 }
 
 module.exports = {
@@ -53,7 +54,7 @@ module.exports = {
         }, 
 
         // Handle an array of uploaded photos asynchronously
-        uploadPhotos: async (_, { files }: UploadedFiles, { dataSources }) => {
+        uploadPhotos: async (_, { files, albumId }: UploadedFiles, { dataSources }) => {
             const { uploadPath, serverBaseUrl } = dataSources.photoAPI.context;
 
             const handleUploadedFile = async (upload: Promise<FileUpload>) => {
@@ -82,6 +83,7 @@ module.exports = {
                             filesize: statSync(filePath.absolute).size,
                             disk: 'local',
                             url: serverBaseUrl + urlPath,
+                            albumId: albumId,
                         }
                     }))
                     .on('error', error => reject(error))
@@ -92,7 +94,7 @@ module.exports = {
 
             let response = [];
             // @ts-ignore
-            const succeeded = resultList.reduce((filtered, result) => {
+            const succeeded = resultList.reduce((filtered, result, index) => {
                 if (result.status === 'fulfilled') {
                     // @ts-ignore
                     filtered.push(result.value.fileStats);

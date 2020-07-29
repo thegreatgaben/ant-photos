@@ -29,6 +29,7 @@ export default function AlbumPhotosList({ album }) {
 
     const photoList = data ? data.photoList.photos : [];
     const fetchQueries = [{ query: getPhotosQuery, variables: {...defaultPhotosRequestQuery, albumId: album.id } }];
+    const uploadExtraVars = { albumId: album.id };
 
     return (        
         <>
@@ -47,24 +48,28 @@ export default function AlbumPhotosList({ album }) {
                 onCancel={() => setShowUploadModal(false)} 
                 footer={null}
             >                    
-                <PhotoUpload fetchQueries={fetchQueries} onUploadFinish={(status, response) => {
-                    // TODO: Type the response
-                    if (status) {
-                        let allUploadSuccess = true;
-                        // Notify any uploads that failed
-                        response.uploadPhotos.forEach(photo => {
-                            if(!photo.uploaded) {
-                                allUploadSuccess = false;
-                                message.error(`${photo.filename} failed to upload`)
-                            }
-                        });
-                        if (allUploadSuccess) message.success('Photos uploaded successfully')
-                    }
-                    else {
-                        message.error('An error occured in the server.');
-                    }
-                    setShowUploadModal(false)
-                }}/>
+                <PhotoUpload 
+                    extraVariables={uploadExtraVars} 
+                    fetchQueries={fetchQueries} 
+                    onUploadFinish={(status, response) => {
+                        // TODO: Type the response
+                        if (status) {
+                            let allUploadSuccess = true;
+                            // Notify any uploads that failed
+                            response.uploadPhotos.forEach(photo => {
+                                if(!photo.uploaded) {
+                                    allUploadSuccess = false;
+                                    message.error(`${photo.filename} failed to upload`)
+                                }
+                            });
+                            if (allUploadSuccess) message.success('Photos uploaded successfully')
+                        }
+                        else {
+                            message.error('An error occured in the server.');
+                        }
+                        setShowUploadModal(false)
+                    }}
+                />
             </Modal>
 
             <PhotosList photoList={photoList}/>
