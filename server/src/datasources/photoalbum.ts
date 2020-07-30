@@ -2,6 +2,8 @@ const { DataSource } = require('apollo-datasource');
 import { RequestQuery } from '../../types/index.d';
 import { getAllWithPagination } from '../utils';
 import {QueryTypes, Op as SQL, Model} from 'sequelize';
+import fs from 'fs';
+import path from 'path';
 
 class PhotoAlbumAPI extends DataSource {
     constructor(store) {
@@ -51,11 +53,29 @@ class PhotoAlbumAPI extends DataSource {
         return result;
     }
 
-    async delete(id) {
+    async delete(id, deletePhotos = false) {
         const options = {
-            where: { id: id }
+            where: { id: id },
+            include: this.store.Photo
         };
+        const album = await this.store.PhotoAlbum.findOne(options);
+        // TODO: Quite inefficient
+        for (let i = 0; i < album.Photos.length; i++) {
+            const photo = album.Photos[i];
+            if (deletePhotos) {
+                // Delete photo file
+                fs.unlinkSync(path.join(__dirname, `../../${photo.filepath}`));
+                await photo.destroy();
+            }
+            else {
+                photo.albumId = null;
+                photo.isCoverPhoto = false;
+                await photo.save();
+            }
+        }
+
         const result = await this.store.PhotoAlbum.destroy(options);
+
         return Boolean(result);
     }
 

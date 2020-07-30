@@ -4,6 +4,7 @@ import {ModalProps} from 'antd/lib/modal';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
 import {defaultRequestQuery, albumsQuery} from './AlbumList';
+import {useState} from 'react';
 
 interface DeleteAlbumConfirmProps extends ModalProps{
     setVisibility: (flag: boolean) => void;
@@ -26,10 +27,15 @@ export default function DeleteAlbumConfirm({ setVisibility, album, ...props }: D
             message.success('Album deleted successfully');
             setVisibility(false)
         },
+        onError: () => {
+            message.error('An error occured in the server'); 
+            setVisibility(false);
+        }
     })
+    const [deleteAlbumPhotos, setDeleteAlbumPhotos] = useState(false);
 
     const handleDelete = () => {
-        deleteAlbum({ variables: album });
+        deleteAlbum({ variables: {id: album.id, deletePhotos: deleteAlbumPhotos} });
     }
 
     return (
@@ -52,7 +58,7 @@ export default function DeleteAlbumConfirm({ setVisibility, album, ...props }: D
                     
                     <div style={{ marginTop: 10, marginBottom: 20 }}>
                         <Text>Would you also like to delete the photos in it?</Text>
-                        <Checkbox style={{ marginLeft: 10 }}></Checkbox>
+                        <Checkbox style={{ marginLeft: 10 }} onChange={() => setDeleteAlbumPhotos(true)}></Checkbox>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>

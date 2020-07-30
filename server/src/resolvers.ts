@@ -44,12 +44,12 @@ module.exports = {
                 description: photoAlbum.description,
             }
         },
-        deletePhotoAlbum: async (_, { id }, { dataSources }) => {
+        deletePhotoAlbum: async (_, { id, deletePhotos }, { dataSources }) => {
             try {
-                const result = await dataSources.photoAlbumAPI.delete(id);
+                const result = await dataSources.photoAlbumAPI.delete(id, deletePhotos);
                 return result
             } catch (error) {
-                return false;
+                throw Error(error);
             }
         }, 
 
@@ -62,7 +62,7 @@ module.exports = {
                 const result = await dataSources.photoAPI.delete(id, dataSources.photoAlbumAPI);
                 return result
             } catch (error) {
-                return false;
+                throw Error(error);
             }
         },
 
