@@ -1,9 +1,10 @@
-const { DataSource } = require('apollo-datasource');
 import { RequestQuery } from '../../types/index.d';
 import { getAllWithPagination } from '../utils';
 import {QueryTypes, Op as SQL, Model} from 'sequelize';
 import fs from 'fs';
 import path from 'path';
+// Can't use ES6 import for this
+const { DataSource } = require('apollo-datasource');
 
 class PhotoAlbumAPI extends DataSource {
     constructor(store) {

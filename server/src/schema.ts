@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express');
+import { gql } from 'apollo-server-express';
 
 const graphQLTypes = gql`
     type PhotoAlbum {
@@ -72,4 +72,4 @@ const graphQLTypes = gql`
     }
 `;
 
-module.exports = graphQLTypes;
+export default graphQLTypes;

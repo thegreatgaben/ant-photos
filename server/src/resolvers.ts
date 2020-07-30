@@ -1,10 +1,7 @@
-const path = require('path');
-
-import { FileUpload } from 'graphql-upload';
 import { PaginationResponse, UploadedFiles, PhotoMeta } from '../types/index.d';
 import {handleFileUpload} from './utils';
 
-module.exports = {
+export default {
     Query: {
         photoAlbumList: async (_, query, { dataSources }) => {
             const result: PaginationResponse = await dataSources.photoAlbumAPI.getAll(query);
@@ -39,12 +36,8 @@ module.exports = {
             }
         },
         deletePhotoAlbum: async (_, { id, deletePhotos }, { dataSources }) => {
-            try {
-                const result = await dataSources.photoAlbumAPI.delete(id, deletePhotos);
-                return result
-            } catch (error) {
-                throw Error(error);
-            }
+            const result = await dataSources.photoAlbumAPI.delete(id, deletePhotos);
+            return result
         }, 
 
         updatePhoto: async (_, { id, input }, { dataSources }) => {
@@ -52,12 +45,8 @@ module.exports = {
             return photo;
         },
         deletePhoto: async (_, { id }, { dataSources }) => {
-            try {
-                const result = await dataSources.photoAPI.delete(id, dataSources.photoAlbumAPI);
-                return result
-            } catch (error) {
-                throw Error(error);
-            }
+            const result = await dataSources.photoAPI.delete(id, dataSources.photoAlbumAPI);
+            return result
         },
 
         // Handle an array of uploaded photos asynchronously

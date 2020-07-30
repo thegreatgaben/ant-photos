@@ -6,14 +6,12 @@ import path from 'path';
 import { createWriteStream, statSync } from 'fs';
 
 export async function getAllWithPagination(
-    // TODO: Type the models
     model: any,
     options: {[key: string]: any}, 
     query: RequestQuery,
     defaultPageSize = 10
 ): Promise<PaginationResponse> {
 
-    // TODO: Validate params
     let { pageSize, after } = query;
     if (!pageSize) pageSize = defaultPageSize;
 

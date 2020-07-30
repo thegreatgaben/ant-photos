@@ -3,6 +3,7 @@ import {getAllWithPagination} from "../utils";
 import fs from 'fs';
 import path from 'path';
 import {Op as SQL} from "sequelize";
+// Can't use ES6 import for this
 const { DataSource } = require('apollo-datasource');
 
 interface PhotosRequestQuery extends RequestQuery {

@@ -4,9 +4,9 @@ import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import path from 'path';
 
-const database = require('../models');
-const typeDefs = require('./schema');
-const resolvers = require('./resolvers');
+import database from '../models';
+import typeDefs from './schema';
+import resolvers from './resolvers';
 
 import PhotoAlbumAPI from './datasources/photoalbum';
 import PhotoAPI from './datasources/photo';
