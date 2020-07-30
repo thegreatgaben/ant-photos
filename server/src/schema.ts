@@ -52,6 +52,7 @@ const graphQLTypes = gql`
 
     input PhotoInput {
         caption: String!
+        albumId: ID
     }
 
     type PhotoUploadedResponse {

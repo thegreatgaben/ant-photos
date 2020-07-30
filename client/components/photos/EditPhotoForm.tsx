@@ -1,4 +1,6 @@
-import {Form, Input} from "antd";
+import {Form, Input, Select} from "antd";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
 
 const layout = {
     labelCol: {
@@ -9,7 +11,25 @@ const layout = {
     },
 };
 
+const getPhotoAlbums = gql`
+    query {
+        photoAlbumList {
+            albums {
+                id
+                name
+            }
+        }
+    }
+`
+
 export default function EditPhotoForm({ form }) {
+    const { data } = useQuery(getPhotoAlbums);
+    const albumList = data ? data.photoAlbumList.albums : [];
+
+    const handleAlbumChange = albumId => {
+        form.setFieldsValue({ albumId });
+    }
+
     return (
         <Form
             className="mt-3"
@@ -29,6 +49,19 @@ export default function EditPhotoForm({ form }) {
                 ]}
             >
                 <Input/>
+            </Form.Item>
+            <Form.Item
+                className="mr-3"
+                label="Album"
+                name="albumId"
+            >
+                <Select onChange={handleAlbumChange} allowClear>
+                    {albumList.map(album => {
+                        return (
+                            <Select.Option key={album.id} value={album.id}>{album.name}</Select.Option>
+                        );
+                    })}
+                </Select>
             </Form.Item>
         </Form> 
     )

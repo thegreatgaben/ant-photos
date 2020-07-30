@@ -12,6 +12,7 @@ export const getPhotosQuery = gql`
                 mimetype
                 url
                 caption
+                albumId
             }
         }
     }

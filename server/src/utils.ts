@@ -23,7 +23,7 @@ export async function getAllWithPagination(
                 operator = SQL.lte;
             }
         }
-        options.where = {id: {[operator]: after} }
+        options.where = { ...options.where, id: {[operator]: after} }
     }
     const resultList: Array<any> = await model.findAll(options)
 

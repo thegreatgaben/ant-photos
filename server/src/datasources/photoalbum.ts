@@ -1,7 +1,7 @@
 const { DataSource } = require('apollo-datasource');
 import { RequestQuery } from '../../types/index.d';
 import { getAllWithPagination } from '../utils';
-import {QueryTypes, Op as SQL} from 'sequelize';
+import {QueryTypes, Op as SQL, Model} from 'sequelize';
 
 class PhotoAlbumAPI extends DataSource {
     constructor(store) {
@@ -65,6 +65,31 @@ class PhotoAlbumAPI extends DataSource {
             type: QueryTypes.SELECT,
         })
         return result.count;
+    }
+
+    // Will find the next new cover photo when its current one has been deleted or moved to another album
+    // It just gets the latest photo in the album
+    // If no more photos in the album, then a placeholder would be used
+    async findNewCoverPhoto(id, photoModel) {
+        let options: {[key: string]: any} = {
+            where: {
+                albumId: id
+            },
+            order: [
+                ['id', 'DESC']  
+            ],
+            limit: 1,
+        }
+        const photoList: any[] = await photoModel.findAll(options);
+        if (photoList.length > 0) {
+            photoList[0].isCoverPhoto = true;
+            await photoList[0].save();
+        }
+
+        options = { where: { id } };
+        const album = await this.store.PhotoAlbum.findOne(options);
+        album.coverPhotoUrl = photoList.length > 0 ? photoList[0].url : null;
+        await album.save();
     }
 }
 

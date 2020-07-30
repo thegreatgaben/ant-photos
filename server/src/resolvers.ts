@@ -54,7 +54,7 @@ module.exports = {
         }, 
 
         updatePhoto: async (_, { id, input }, { dataSources }) => {
-            const photo = await dataSources.photoAPI.update(id, input);
+            const photo = await dataSources.photoAPI.update(id, input, dataSources.photoAlbumAPI);
             return photo;
         },
         deletePhoto: async (_, { id }, { dataSources }) => {

@@ -8,8 +8,8 @@ import {useMutation} from '@apollo/react-hooks';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const updatePhotoMutation = gql`
-    mutation UpdatePhoto($id: ID!, $caption: String!) {
-        updatePhoto(id: $id, input: {caption: $caption}) {
+    mutation UpdatePhoto($id: ID!, $caption: String!, $albumId: ID) {
+        updatePhoto(id: $id, input: {caption: $caption, albumId: $albumId}) {
             id
             caption
         }
@@ -31,6 +31,10 @@ export default function PhotosList({ photoListResponse, fetchQueries, fetchMore 
             message.success('Photo updated successfully');
             setShowPhotoModal(false)
         },
+        onError: () => {
+            message.error('An error occured in the server');
+            setShowPhotoModal(false)
+        }
     });
     const [deletePhoto] = useMutation(deletePhotoMutation, {
         refetchQueries: fetchQueries,
@@ -38,6 +42,10 @@ export default function PhotosList({ photoListResponse, fetchQueries, fetchMore 
             message.success('Photo deleted successfully');
             setShowPhotoModal(false)
         },
+        onError: () => {
+            message.error('An error occured in the server');
+            setShowPhotoModal(false)
+        }
     });
 
     useEffect(() => {
@@ -48,7 +56,7 @@ export default function PhotosList({ photoListResponse, fetchQueries, fetchMore 
     const handlePhotoUpdate = async () => {
         const values = await form.validateFields();
         //@ts-ignore
-        updatePhoto({ variables: { id: photoToShow.id, caption: values.caption } });
+        updatePhoto({ variables: { ...values, id: photoToShow.id } });
     }
     
     const onConfirmDelete = () => {
