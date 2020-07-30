@@ -3,10 +3,24 @@
 }
 
 .sider {
-    overflow: auto;
+    overflow: hidden;
     height: 100vh;
     position: fixed;
     left: 0;
+
+    .logoContainer {
+        margin: 40px;
+        text-align: center;
+        h5 {
+            margin-top: 10px;
+            color: white;
+        }
+    }
+
+    .menu {
+        height: 100%;
+        border-right: 0;
+    }
 }
 
 .headerRightCol {
@@ -14,4 +28,14 @@
     justify-content: flex-end;
     align-items: center;
     height: 100%;
+}
+
+.contentLayout {
+    margin-left: 200px; 
+    padding: 0 5px 24px;
+    .content {
+        padding: 24px;
+        margin: 0;
+        min-height: 280px;
+    }
 }

@@ -15,12 +15,16 @@ export default function AppLayout({ children }) {
     return (
         <Layout className={style.layout}>
             <Layout>
-                <Sider width={200}>
+                <Sider className={style.sider} width={200}>
+                    <div className={style.logoContainer}>
+                        <img alt="Logo" src="/images/logo.svg"/>
+                        <h5>Ant Photos</h5>
+                    </div>
                     <Menu
+                        className={style.menu}
                         theme="dark"
                         mode="inline"
                         selectedKeys={selectedMenuItem}
-                        style={{ height: '100%', borderRight: 0 }}
                     >
                         <Menu.Item key="1" icon={<FileImageOutlined/>} onClick={() => router.push('/')}>
                             Photos
@@ -30,15 +34,8 @@ export default function AppLayout({ children }) {
                         </Menu.Item>
                     </Menu>
                 </Sider>
-                <Layout style={{ padding: '0 24px 24px' }}>
-                    <Content
-                        className="site-layout-background"
-                        style={{
-                            padding: 24,
-                                margin: 0,
-                                minHeight: 280,
-                        }}
-                    >
+                <Layout className={style.contentLayout}>
+                    <Content className={style.content}>
                         {children}
                     </Content>
                 </Layout>
