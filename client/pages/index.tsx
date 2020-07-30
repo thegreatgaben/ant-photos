@@ -61,8 +61,8 @@ export default function Home() {
         }
     }
     const disabledDates = (current) => {
-        // Can not select days after today and today
-        return current && current > moment().startOf('day');
+        // Can not select days after today 
+        return current > moment().endOf('day');
     }
 
     return (

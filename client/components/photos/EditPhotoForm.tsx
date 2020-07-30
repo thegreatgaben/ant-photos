@@ -41,12 +41,6 @@ export default function EditPhotoForm({ form }) {
                 className="mr-3"
                 label="Caption"
                 name="caption"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input the photo\'s caption!',
-                    },
-                ]}
             >
                 <Input/>
             </Form.Item>

@@ -40,9 +40,13 @@ class PhotoAPI extends DataSource {
         if (query.startDate && query.endDate) {
             const startDate = new Date(query.startDate);
             const endDate = new Date(query.endDate);
+            const trueEndDate = new Date(
+                endDate.getFullYear(), endDate.getMonth(), 
+                endDate.getDate(), 23, 59, 59
+            );
             options.where = {
                 createdAt: {
-                    [SQL.between]: [startDate, endDate]
+                    [SQL.between]: [startDate, trueEndDate]
                 }
             }
         }
