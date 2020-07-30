@@ -1,5 +1,9 @@
 import { Op as SQL } from 'sequelize'; 
 import { RequestQuery, PaginationResponse } from '../types/index.d';
+import {FileUpload} from 'graphql-upload';
+import crypto from 'crypto';
+import path from 'path';
+import { createWriteStream, statSync } from 'fs';
 
 export async function getAllWithPagination(
     // TODO: Type the models
@@ -40,4 +44,43 @@ export async function getAllWithPagination(
             paginatedList: results,
         }
     }
+}
+
+export async function handleFileUpload(
+    upload: Promise<FileUpload>,
+    apolloServerContext,
+    albumId
+) {
+    const { uploadPath, serverBaseUrl } = apolloServerContext;
+    const { createReadStream, filename, mimetype } = await upload; 
+
+    const origFilename = filename;
+    const fileExt = origFilename.split('.')[1];
+    const newFilename = `${crypto.randomBytes(20).toString('hex')}.${fileExt}`;
+
+    const filePath = {
+        relative: path.join(uploadPath.relative, newFilename),
+        absolute: path.join(uploadPath.absolute, newFilename),
+    }
+    const index = filePath.relative.indexOf('/');
+    const urlPath = filePath.relative.substr(index);
+
+    return new Promise((resolve, reject) => 
+        createReadStream()
+        .pipe(createWriteStream(filePath.absolute))
+        .on('close', () => resolve({ 
+            origFilename: origFilename,
+            fileStats: {
+                mimetype,
+                filename: newFilename, 
+                filepath: filePath.relative,
+                filesize: statSync(filePath.absolute).size,
+                disk: 'local',
+                url: serverBaseUrl + urlPath,
+                albumId: albumId,
+                isCoverPhoto: false,
+            }
+        }))
+        .on('error', () => reject(new Error(origFilename)))
+    );
 }

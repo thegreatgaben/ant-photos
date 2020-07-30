@@ -1,14 +1,8 @@
 const path = require('path');
-const { createWriteStream, statSync } = require('fs');
-import crypto from 'crypto';
 
 import { FileUpload } from 'graphql-upload';
-import { PaginationResponse } from '../types/index.d';
-
-interface UploadedFiles {
-    files: Promise<FileUpload>[];
-    albumId: string;
-}
+import { PaginationResponse, UploadedFiles, PhotoMeta } from '../types/index.d';
+import {handleFileUpload} from './utils';
 
 module.exports = {
     Query: {
@@ -68,55 +62,18 @@ module.exports = {
 
         // Handle an array of uploaded photos asynchronously
         uploadPhotos: async (_, { files, albumId }: UploadedFiles, { dataSources }) => {
-            const { uploadPath, serverBaseUrl } = dataSources.photoAPI.context;
 
-            const handleUploadedFile = async (upload: Promise<FileUpload>) => {
-                const { createReadStream, filename, mimetype } = await upload; 
-
-                const origFilename = filename;
-                const fileExt = origFilename.split('.')[1];
-                const newFilename = `${crypto.randomBytes(20).toString('hex')}.${fileExt}`;
-
-                const filePath = {
-                    relative: path.join(uploadPath.relative, newFilename),
-                    absolute: path.join(uploadPath.absolute, newFilename),
-                }
-                const index = filePath.relative.indexOf('/');
-                const urlPath = filePath.relative.substr(index);
-
-                return new Promise((resolve, reject) => 
-                    createReadStream()
-                    .pipe(createWriteStream(filePath.absolute))
-                    .on('close', () => resolve({ 
-                        origFilename: origFilename,
-                        fileStats: {
-                            mimetype,
-                            filename: newFilename, 
-                            filepath: filePath.relative,
-                            filesize: statSync(filePath.absolute).size,
-                            disk: 'local',
-                            url: serverBaseUrl + urlPath,
-                            albumId: albumId,
-                            isCoverPhoto: false,
-                        }
-                    }))
-                    .on('error', error => reject(error))
-                );
-            }
-
-            const resultList = await Promise.allSettled(files.map(handleUploadedFile));
+            const resultList = await Promise.allSettled(
+                files.map(upload => handleFileUpload(upload, dataSources.photoAPI.context, albumId))
+            );
 
             let response = [];
-            // @ts-ignore
-            const succeeded = resultList.reduce((filtered, result, index) => {
+            const succeeded = resultList.reduce((filtered, result: PromiseSettledResult<PhotoMeta>) => {
                 if (result.status === 'fulfilled') {
-                    // @ts-ignore
                     filtered.push(result.value.fileStats);
-                    // @ts-ignore
                     response.push({ filename: result.value.origFilename, uploaded: true })
                 } else {
-                    // @ts-ignore
-                    response.push({ filename: result.value.origFilename, uploaded: false })
+                    response.push({ filename: result.reason.message, uploaded: false })
                 }
                 return filtered;
             }, []);

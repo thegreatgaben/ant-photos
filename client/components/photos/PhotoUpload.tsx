@@ -31,12 +31,13 @@ export default function PhotoUpload({ onUploadFinish, fetchQueries, extraVariabl
     });
 
     const onDrop = useCallback(
-        (photos) => {
+        (photos: File[]) => {
             uploadPhotos({ variables: { ...extraVariables, files: photos } });
         },
         [uploadPhotos]
     );
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+    const acceptedMimeTypes = { accept: 'image/jpeg, image/png, image/gif' };
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, ...acceptedMimeTypes });
 
     return (
         <>

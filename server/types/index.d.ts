@@ -1,3 +1,5 @@
+import { FileUpload } from 'graphql-upload';
+
 export interface RequestQuery {
     search?: string;
     pageSize?: number;
@@ -11,3 +13,21 @@ export interface PaginationResponse {
     paginatedList: any[];
 }
 
+export interface UploadedFiles {
+    files: Promise<FileUpload>[];
+    albumId: string;
+}
+
+export interface PhotoMeta {
+    origFilename: string;
+    fileStats: {
+        mimetype: string;
+        filename: string;
+        filepath: string;
+        filesize: number;
+        disk: string;
+        url: string;
+        albumId: number | null;
+        isCoverPhoto: boolean;
+    }
+}
