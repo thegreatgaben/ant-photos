@@ -5,6 +5,7 @@ import {useState, useEffect} from 'react';
 import EditPhotoForm from './EditPhotoForm';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const updatePhotoMutation = gql`
     mutation UpdatePhoto($id: ID!, $caption: String!) {
@@ -21,7 +22,7 @@ const deletePhotoMutation = gql`
     }
 `;
 
-export default function PhotosList({ photoList, fetchQueries }) {
+export default function PhotosList({ photoListResponse, fetchQueries, fetchMore }) {
     const [showPhotoModal, setShowPhotoModal] = useState(false);
     const [photoToShow, setPhotoToShow] = useState({});
     const [updatePhoto] = useMutation(updatePhotoMutation, {
@@ -81,26 +82,34 @@ export default function PhotosList({ photoList, fetchQueries }) {
                 <EditPhotoForm form={form}/>
             </Modal>
             {
-                photoList.length === 0 ?
+                photoListResponse.photos.length === 0 ?
                 <Empty 
                     className={style.photoListEmpty}
                     image="/images/photos_empty.svg"
                     description="Put all your memories in a safe place here. Upload some photos now."
                 />
                 :
-                <div className={style.photoListContainer}>
-                    {photoList.map(photo => { 
-                        return (
-                            <div key={photo.id} className={style.photoItem} onClick={() => {
-                                    setPhotoToShow(photo);
-                                    setShowPhotoModal(true);
-                                }}
-                            >
-                                <img src={photo.url}/>
-                            </div>
-                        )
-                    })}
-                </div>
+                <InfiniteScroll 
+                    dataLength={photoListResponse.photos.length} 
+                    next={() => fetchMore()}
+                    hasMore={photoListResponse.cursor && photoListResponse.cursor !== ''} 
+                    loader={<div>Loading...</div>}
+                    endMessage={<div>You have reached the end!</div>}
+                >
+                    <div className={style.photoListContainer}>
+                        {photoListResponse.photos.map(photo => { 
+                            return (
+                                <div key={photo.id} className={style.photoItem} onClick={() => {
+                                        setPhotoToShow(photo);
+                                        setShowPhotoModal(true);
+                                    }}
+                                >
+                                    <img src={photo.url}/>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </InfiniteScroll>
             }
         </>
     );

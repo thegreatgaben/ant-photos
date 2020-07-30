@@ -12,7 +12,7 @@ const { Title } = Typography;
 
 export default function AlbumPhotosList({ album }) {
     const [showUploadModal, setShowUploadModal] = useState(false);
-    const [getAlbumPhotos, {called, loading, error, data}] = useLazyQuery(getPhotosQuery);
+    const [getAlbumPhotos, {called, loading, error, data, fetchMore}] = useLazyQuery(getPhotosQuery);
 
     useEffect(() => {
         if (album.id) {
@@ -27,9 +27,24 @@ export default function AlbumPhotosList({ album }) {
     if (called && loading) return <div>Loading...</div>;
     if (called && error) return <div>There is an error!</div>;
 
-    const photoList = data ? data.photoList.photos : [];
+    const photoListResponse = data ? data.photoList : { photos: [] }
     const fetchQueries = [{ query: getPhotosQuery, variables: {...defaultPhotosRequestQuery, albumId: album.id } }];
     const uploadExtraVars = { albumId: album.id };
+    const handleFetchMore = () => {
+        fetchMore({
+            query: getPhotosQuery,
+            variables: { ...defaultPhotosRequestQuery, after: photoListResponse.cursor, albumId: album.id },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+                const previousPhotos = previousResult.photoList.photos;
+                const newPhotos = fetchMoreResult.photoList.photos;
+                fetchMoreResult.photoList.photos = [
+                    ...previousPhotos,
+                    ...newPhotos,
+                ]
+                return fetchMoreResult;
+            }
+        })
+    }
 
     return (        
         <>
@@ -72,7 +87,11 @@ export default function AlbumPhotosList({ album }) {
                 />
             </Modal>
 
-            <PhotosList photoList={photoList}/>
+            <PhotosList 
+                photoListResponse={photoListResponse}
+                fetchQueries={fetchQueries}
+                fetchMore={handleFetchMore}
+            />
         </>
     );
 }

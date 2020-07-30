@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import { useQuery } from "@apollo/react-hooks";
+import {useState, useEffect} from 'react';
+import { useLazyQuery } from "@apollo/react-hooks";
 import {message, Button, Modal} from 'antd';
 import {UploadOutlined} from '@ant-design/icons';
 
@@ -9,12 +9,33 @@ import {defaultPhotosRequestQuery, getPhotosQuery} from '../components/utils';
 
 export default function Home() {
     const [showUploadModal, setShowUploadModal] = useState(false);
-    const {loading, error, data} = useQuery(getPhotosQuery, { variables: defaultPhotosRequestQuery });
+    const [getPhotos, {called, loading, error, data, fetchMore}] = useLazyQuery(getPhotosQuery);
+
+    useEffect(() => {
+        getPhotos({ variables: defaultPhotosRequestQuery });
+    }, []);
     
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>There is an error!</div>;
+    if (called && loading) return <div>Loading...</div>;
+    if (called && error) return <div>There is an error!</div>;
+
 
     const fetchQueries = [{ query: getPhotosQuery, variables: defaultPhotosRequestQuery }];
+    const photoListResponse = data ? data.photoList : { photos: [] }
+    const handleFetchMore = () => {
+        fetchMore({
+            query: getPhotosQuery,
+            variables: { ...defaultPhotosRequestQuery, after: photoListResponse.cursor },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+                const previousPhotos = previousResult.photoList.photos;
+                const newPhotos = fetchMoreResult.photoList.photos;
+                fetchMoreResult.photoList.photos = [
+                    ...previousPhotos,
+                    ...newPhotos,
+                ]
+                return fetchMoreResult;
+            }
+        })
+    }
 
     return (
         <>
@@ -51,7 +72,11 @@ export default function Home() {
                 }}/>
             </Modal>
 
-            <PhotoList photoList={data.photoList.photos} fetchQueries/>
+            <PhotoList 
+                photoListResponse={photoListResponse} 
+                fetchQueries={fetchQueries} 
+                fetchMore={handleFetchMore}
+            />
         </>
     );
 }
