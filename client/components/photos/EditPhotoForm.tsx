@@ -12,7 +12,7 @@ const layout = {
 };
 
 const getPhotoAlbums = gql`
-    query {
+    query GetPhotoAlbumList {
         photoAlbumList {
             albums {
                 id

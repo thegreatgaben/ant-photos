@@ -5,19 +5,21 @@ import {UploadOutlined} from '@ant-design/icons';
 
 import PhotoList from "../components/photos/PhotoList";
 import PhotoUpload from '../components/photos/PhotoUpload';
-import {defaultPhotosRequestQuery, getPhotosQuery} from '../components/utils';
+import {defaultPhotosRequestQuery, getPhotosQuery} from '../components/shared';
 import { useRouter } from 'next/router';
 import moment from 'moment';
+import { GetPaginatedPhotoList_photoList, GetPaginatedPhotoListVariables, GetPaginatedPhotoList } from '../components/types/GetPaginatedPhotoList';
+import { UploadPhotos, UploadPhotos_uploadPhotos } from '../components/photos/types/UploadPhotos';
 
 const { RangePicker } = DatePicker;
 
 export default function Home() {
     const router = useRouter();
-    const { startDate, endDate } = router.query;
+    const { startDate, endDate }: GetPaginatedPhotoListVariables = router.query;
 
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [queryParams, setQueryParams] = useState(defaultPhotosRequestQuery);
-    const [getPhotos, {called, loading, error, data, fetchMore}] = useLazyQuery(getPhotosQuery);
+    const [getPhotos, {called, loading, error, data, fetchMore}] = useLazyQuery<GetPaginatedPhotoList, GetPaginatedPhotoListVariables>(getPhotosQuery);
 
     useEffect(() => {
         const params = {...defaultPhotosRequestQuery, startDate, endDate};
@@ -29,7 +31,11 @@ export default function Home() {
     if (called && error) return <div>There is an error!</div>;
 
     const fetchQueries = [{ query: getPhotosQuery, variables: defaultPhotosRequestQuery }];
-    const photoListResponse = data ? data.photoList : { photos: [] }
+    const photoListResponse: GetPaginatedPhotoList_photoList = data ? data.photoList : { 
+        __typename: "PhotoConnection",
+        cursor: '',
+        photos: [] 
+    }
     const handleFetchMore = () => {
         fetchMore({
             query: getPhotosQuery,
@@ -80,12 +86,11 @@ export default function Home() {
                 onCancel={() => setShowUploadModal(false)} 
                 footer={null}
             >                    
-                <PhotoUpload fetchQueries={fetchQueries} onUploadFinish={(status, response) => {
-                    // TODO: Type the response
+                <PhotoUpload fetchQueries={fetchQueries} onUploadFinish={(status: boolean, response: UploadPhotos) => {
                     if (status) {
                         let allUploadSuccess = true;
                         // Notify any uploads that failed
-                        response.uploadPhotos.forEach(photo => {
+                        response.uploadPhotos.forEach((photo: UploadPhotos_uploadPhotos) => {
                             if(!photo.uploaded) {
                                 allUploadSuccess = false;
                                 message.error(`${photo.filename} failed to upload`)

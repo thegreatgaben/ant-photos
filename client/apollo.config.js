@@ -1,9 +1,6 @@
 module.exports = {
   client: {
-      includes: ['./pages/**/*.tsx'],
-      service: {
-          name: 'Gaben-Graph',
-          localSchemaFile: './schema.json'
-      },
+      service: 'ant-photos-graph',
+      includes: ['./pages/**/*.tsx', './components/**/*.tsx', './components/**/*.ts'],
   },
 };

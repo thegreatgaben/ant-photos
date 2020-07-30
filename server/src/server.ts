@@ -28,7 +28,10 @@ const server = new ApolloServer({
     dataSources: () => ({
         photoAlbumAPI: new PhotoAlbumAPI(database),
         photoAPI: new PhotoAPI(database),
-    })
+    }),
+    engine: {
+        reportSchema: process.env.APOLLO_KEY ? true : false,
+    },
 });
 const app = express();
 app.use('/photos', express.static(uploadPath.absolute));

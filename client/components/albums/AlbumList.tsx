@@ -13,7 +13,7 @@ import {useRouter} from 'next/router';
 export const defaultRequestQuery = {pageSize: 10};
 
 export const albumsQuery = gql`
-    query ($pageSize: Int, $after: String, $search: String) {
+    query GetPaginatedPhotoAlbumList($pageSize: Int, $after: String, $search: String) {
         photoAlbumList(pageSize: $pageSize, after: $after, search: $search) {
             cursor
             albums {

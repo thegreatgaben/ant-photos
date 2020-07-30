@@ -1,15 +1,16 @@
 import { useCallback } from 'react';
 import { useDropzone } from "react-dropzone";
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, DocumentNode } from '@apollo/react-hooks';
 import { InboxOutlined } from '@ant-design/icons';
 import gql from 'graphql-tag';
 
 import style from './PhotoUpload.module.scss';
+import {UploadPhotos} from './types/UploadPhotos';
+import {GetPaginatedPhotoListVariables} from '../types/GetPaginatedPhotoList';
 
 interface PhotoUploadProps {
-    onUploadFinish: (status: boolean, response: any) => void;
-    // TODO: Type this
-    fetchQueries: {query: any, variables: any}[];
+    onUploadFinish: (status: boolean, response: UploadPhotos) => void;
+    fetchQueries: {query: DocumentNode, variables: GetPaginatedPhotoListVariables}[];
     extraVariables?: Object;
 }
 

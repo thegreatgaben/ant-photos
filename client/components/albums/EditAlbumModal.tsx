@@ -14,7 +14,7 @@ interface EditAlbumModalProps extends ModalProps {
 }
 
 const updateAlbumMutation = gql`
-    mutation EditAlbum($id: ID!, $name: String!, $description: String!) {
+    mutation UpdatePhotoAlbum($id: ID!, $name: String!, $description: String!) {
         updatePhotoAlbum(id: $id, input: {name: $name, description: $description}) {
             id
             name

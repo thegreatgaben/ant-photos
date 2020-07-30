@@ -11,7 +11,7 @@ interface CreateAlbumModalProps extends ModalProps {
 }
 
 const createAlbumMutation = gql`
-    mutation CreateAlbum($name: String!, $description: String!) {
+    mutation CreatePhotoAlbum($name: String!, $description: String!) {
         createPhotoAlbum(input: {name: $name, description: $description}) {
             id
             name

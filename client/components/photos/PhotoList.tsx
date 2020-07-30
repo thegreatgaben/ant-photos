@@ -102,7 +102,6 @@ export default function PhotosList({ photoListResponse, fetchQueries, fetchMore 
                     next={() => fetchMore()}
                     hasMore={photoListResponse.cursor && photoListResponse.cursor !== ''} 
                     loader={<div>Loading...</div>}
-                    endMessage={<div>You have reached the end!</div>}
                 >
                     <div className={style.photoListContainer}>
                         {photoListResponse.photos.map(photo => { 

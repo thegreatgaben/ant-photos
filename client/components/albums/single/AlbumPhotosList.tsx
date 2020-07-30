@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {defaultPhotosRequestQuery, getPhotosQuery} from "../../utils";
+import {defaultPhotosRequestQuery, getPhotosQuery} from "../../shared";
 import {message, Typography, Button, Modal} from "antd";
 import {UploadOutlined} from '@ant-design/icons';
 import {useLazyQuery} from "@apollo/react-hooks";
@@ -7,6 +7,8 @@ import {useEffect} from "react";
 
 import PhotosList from "../../photos/PhotoList";
 import PhotoUpload from '../../photos/PhotoUpload';
+import {GetPaginatedPhotoList} from '../../types/GetPaginatedPhotoList';
+import {UploadPhotos} from '../../photos/types/UploadPhotos';
 
 const { Title } = Typography;
 
@@ -34,7 +36,7 @@ export default function AlbumPhotosList({ album }) {
         fetchMore({
             query: getPhotosQuery,
             variables: { ...defaultPhotosRequestQuery, after: photoListResponse.cursor, albumId: album.id },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
+            updateQuery: (previousResult: GetPaginatedPhotoList, { fetchMoreResult }) => {
                 const previousPhotos = previousResult.photoList.photos;
                 const newPhotos = fetchMoreResult.photoList.photos;
                 fetchMoreResult.photoList.photos = [
@@ -66,8 +68,7 @@ export default function AlbumPhotosList({ album }) {
                 <PhotoUpload 
                     extraVariables={uploadExtraVars} 
                     fetchQueries={fetchQueries} 
-                    onUploadFinish={(status, response) => {
-                        // TODO: Type the response
+                    onUploadFinish={(status: boolean, response: UploadPhotos) => {
                         if (status) {
                             let allUploadSuccess = true;
                             // Notify any uploads that failed

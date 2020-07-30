@@ -15,7 +15,7 @@ interface DeleteAlbumConfirmProps extends ModalProps{
 const { Text } = Typography;
 
 const deleteAlbumMutation = gql`
-    mutation DeleteAlbum($id: ID!, $deletePhotos: Boolean) {
+    mutation DeletePhotoAlbum($id: ID!, $deletePhotos: Boolean) {
         deletePhotoAlbum(id: $id, deletePhotos: $deletePhotos)
     }
 `;
