@@ -59,7 +59,7 @@ module.exports = {
         },
         deletePhoto: async (_, { id }, { dataSources }) => {
             try {
-                const result = await dataSources.photoAPI.delete(id);
+                const result = await dataSources.photoAPI.delete(id, dataSources.photoAlbumAPI);
                 return result
             } catch (error) {
                 return false;

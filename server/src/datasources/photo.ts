@@ -98,7 +98,7 @@ class PhotoAPI extends DataSource {
         return result;
     }
 
-    async delete(id) {
+    async delete(id, photoAlbumDataSource) {
         const options = {
             where: { id: id }
         };
@@ -106,7 +106,13 @@ class PhotoAPI extends DataSource {
         // Delete photo file
         fs.unlinkSync(path.join(__dirname, `../../${photo.filepath}`));
 
+        const albumId = photo.albumId;
+        const isCoverPhoto = photo.isCoverPhoto;
         const result = await this.store.Photo.destroy(options);
+
+        if (albumId && isCoverPhoto)
+            await photoAlbumDataSource.findNewCoverPhoto(albumId, this.store.Photo);
+
         return Boolean(result);
     }
 }
