@@ -1,0 +1,33 @@
+.deleteModalBody {
+    display: flex;
+    padding: 10px;
+
+    .warningIcon {
+        margin-right: 16px;
+        span:global(.anticon) {
+            font-size: 22px;
+            color: #faad14;
+        }
+    }
+
+    .title {
+        font-size: 16px;
+    }
+
+    .extra {
+        margin-top: 10px;
+        margin-bottom: 20px;
+        label:global(.ant-checkbox-wrapper) {
+            margin-left: 10px;
+        }
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        .submit {
+            margin-left: 10px;
+        }
+    }
+}

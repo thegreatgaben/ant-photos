@@ -6,6 +6,8 @@ import {useMutation} from '@apollo/react-hooks';
 import {defaultRequestQuery, albumsQuery} from './AlbumList';
 import {useState} from 'react';
 
+import style from './DeleteAlbumConfirm.module.scss';
+
 interface DeleteAlbumConfirmProps extends ModalProps{
     setVisibility: (flag: boolean) => void;
     // TODO: Type album
@@ -46,24 +48,24 @@ export default function DeleteAlbumConfirm({ setVisibility, album, ...props }: D
             footer={null}
             onCancel={() => setVisibility(false)}
         >
-            <div style={{ display: 'flex', padding: 10 }}>
-                <div style={{ marginRight: 16 }}>
-                    <ExclamationCircleOutlined style={{ fontSize: 22, color: '#faad14' }}/>
+            <div className={style.deleteModalBody}>
+                <div className={style.warningIcon}>
+                    <ExclamationCircleOutlined/>
                 </div>
                 <div>
-                    <Text style={{ fontSize: 16 }}>
+                    <Text className={style.title}>
                         Are you sure you want to delete
                         <Text strong> {album.name}</Text>?
                     </Text>
                     
-                    <div style={{ marginTop: 10, marginBottom: 20 }}>
+                    <div className={style.extra}>
                         <Text>Would you also like to delete the photos in it?</Text>
-                        <Checkbox style={{ marginLeft: 10 }} onChange={() => setDeleteAlbumPhotos(true)}></Checkbox>
+                        <Checkbox onChange={() => setDeleteAlbumPhotos(true)}></Checkbox>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <div className={style.actions}>
                         <Button onClick={() => setVisibility(false)}>Cancel</Button>
-                        <Button style={{ marginLeft: 10 }} type="primary" onClick={handleDelete}>Ok</Button>
+                        <Button className={style.submit} type="primary" onClick={handleDelete}>Ok</Button>
                     </div>
                 </div>
             </div>
