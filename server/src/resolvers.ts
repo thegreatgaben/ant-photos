@@ -97,6 +97,7 @@ module.exports = {
                             disk: 'local',
                             url: serverBaseUrl + urlPath,
                             albumId: albumId,
+                            isCoverPhoto: false,
                         }
                     }))
                     .on('error', error => reject(error))

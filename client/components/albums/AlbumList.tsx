@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
-import {useState} from "react";
-import {useQuery} from "@apollo/react-hooks";
-import {Card, Row, Col, Empty, Button} from "antd";
+import {useState, useEffect} from "react";
+import {useLazyQuery} from "@apollo/react-hooks";
+import {Card, Row, Col, Empty, Button, Input} from "antd";
 import {EditOutlined, DeleteOutlined, PlusOutlined} from '@ant-design/icons';
 import CreateAlbumModal from './CreateAlbumModal';
 import EditAlbumModal from "./EditAlbumModal";
@@ -13,8 +13,8 @@ import {useRouter} from 'next/router';
 export const defaultRequestQuery = {pageSize: 10};
 
 export const albumsQuery = gql`
-    query ($pageSize: Int, $after: String) {
-        photoAlbumList(pageSize: $pageSize, after: $after) {
+    query ($pageSize: Int, $after: String, $search: String) {
+        photoAlbumList(pageSize: $pageSize, after: $after, search: $search) {
             cursor
             albums {
                 id
@@ -26,7 +26,7 @@ export const albumsQuery = gql`
     }
 `;
 
-export default function AlbumList() {
+export default function AlbumList({ routerParams }) {
     const router = useRouter();
 
     const [showCreateAlbumModal, setShowCreateAlbumModal] = useState(false);
@@ -37,18 +37,35 @@ export default function AlbumList() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [albumToDelete, setAlbumToDelete] = useState({});
 
-    const [query, setQuery] = useState(defaultRequestQuery);
-    const {loading, error, data} = useQuery(albumsQuery, { variables: query });
+    const [getAlbums, {called, loading, error, data}] = useLazyQuery(albumsQuery);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>There is an error!</div>;
+    useEffect(() => {
+        getAlbums({ variables: {...defaultRequestQuery, search: routerParams.search} });
+    }, [routerParams])
 
-    const albumList = data.photoAlbumList.albums;
+    if (called && loading) return <div>Loading...</div>;
+    if (called && error) return <div>There is an error!</div>;
+
+    const albumList = data ? data.photoAlbumList.albums : [];
+    const handleSearch = value => {
+        if (value) router.push(`/albums?search=${value}`);
+        else router.push('/albums');
+    }
 
     return (
         <>
             <div className="d-flex justify-content-end mb-3">
-                <Button icon={<PlusOutlined/>} type="primary" onClick={() => setShowCreateAlbumModal(true)}>
+                <Input.Search 
+                    className="mr-3" 
+                    defaultValue={routerParams.search} 
+                    placeholder="Album Name" 
+                    onSearch={handleSearch}
+                />
+                <Button 
+                    icon={<PlusOutlined/>} 
+                    type="primary" 
+                    onClick={() => setShowCreateAlbumModal(true)}
+                >
                     Create Album
                 </Button>
             </div>

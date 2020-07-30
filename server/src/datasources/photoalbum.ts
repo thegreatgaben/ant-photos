@@ -1,7 +1,7 @@
 const { DataSource } = require('apollo-datasource');
 import { RequestQuery } from '../../types/index.d';
 import { getAllWithPagination } from '../utils';
-import {QueryTypes} from 'sequelize';
+import {QueryTypes, Op as SQL} from 'sequelize';
 
 class PhotoAlbumAPI extends DataSource {
     constructor(store) {
@@ -30,6 +30,13 @@ class PhotoAlbumAPI extends DataSource {
             order: [
                 ['id', 'DESC']  
             ],
+        }
+        if (query.search) {
+            options.where = {
+                name: {
+                    [SQL.iLike]: `%${query.search}%`,
+                }
+            }
         }
         const results = await getAllWithPagination(this.store.PhotoAlbum, options, query);
         return results;
