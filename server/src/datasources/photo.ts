@@ -2,6 +2,7 @@ import { RequestQuery } from "../../types";
 import {getAllWithPagination} from "../utils";
 import fs from 'fs';
 import path from 'path';
+import {Op as SQL} from "sequelize";
 const { DataSource } = require('apollo-datasource');
 
 interface PhotosRequestQuery extends RequestQuery {
@@ -34,6 +35,15 @@ class PhotoAPI extends DataSource {
             order: [
                 ['id', 'DESC']  
             ],
+        }
+        if (query.startDate && query.endDate) {
+            const startDate = new Date(query.startDate);
+            const endDate = new Date(query.endDate);
+            options.where = {
+                createdAt: {
+                    [SQL.between]: [startDate, endDate]
+                }
+            }
         }
         if (query.albumId) {
             options.where = {

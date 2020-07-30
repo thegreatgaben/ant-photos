@@ -40,6 +40,8 @@ const graphQLTypes = gql`
             pageSize: Int
             after: String
             albumId: ID
+            startDate: String
+            endDate: String
         ): PhotoConnection!
     }
 
