@@ -10,11 +10,15 @@ import resolvers from './resolvers';
 
 import PhotoAlbumAPI from './datasources/photoalbum';
 import PhotoAPI from './datasources/photo';
+import {existsSync, mkdirSync} from 'fs';
 
 const uploadPath = {
     relative: 'public/photos',
     absolute: path.join(__dirname, '../public/photos'),
 }
+
+// Create photos directory if non-existant
+existsSync(uploadPath.absolute) || mkdirSync(uploadPath.absolute);
 
 const server = new ApolloServer({
     context: ({ req }) => {
