@@ -76,7 +76,7 @@ class PhotoAPI extends DataSource {
 
         let isOldCoverPhoto = false;
         const oldPhotoAlbumId = oldPhoto.albumId;
-        if (attributes.albumId) {
+        if (attributes.albumId && attributes.albumId != oldPhotoAlbumId) {
             const albumPhotoCount = await photoAlbumDataSource.countPhotos(attributes.albumId);
 
             // Make the photo the default cover photo for the empty album its being moved to
@@ -86,6 +86,7 @@ class PhotoAPI extends DataSource {
             if (oldPhoto.albumId && oldPhoto.isCoverPhoto)
                 isOldCoverPhoto = true;
         }
+        console.log(attributes);
 
         await this.store.Photo.update(attributes, options);
         const result = await this.store.Photo.findOne(options);
