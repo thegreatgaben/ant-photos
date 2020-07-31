@@ -19,6 +19,6 @@ export interface UpdatePhoto {
 
 export interface UpdatePhotoVariables {
   id: string;
-  caption: string;
+  caption?: string | null;
   albumId?: string | null;
 }
