@@ -69,7 +69,7 @@ export default function PhotosList({ photoListResponse, fetchQueries, fetchMore 
         <>
             <Modal
                 width={720}
-                style={{ top: 20 }}
+                className={style.editPhotoModal}
                 visible={showPhotoModal}
                 onCancel={() => setShowPhotoModal(false)}
                 closable={false}

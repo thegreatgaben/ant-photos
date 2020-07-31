@@ -97,7 +97,7 @@ export default function AlbumList({ routerParams }) {
                     <Row gutter={16}>
                         {albumList.map(album => {
                             return (
-                                <Col span={6} key={album.id}>
+                                <Col sm={12} md={8} lg={6} key={album.id}>
                                     <Card 
                                         hoverable 
                                         style={{ marginBottom: 16 }}
