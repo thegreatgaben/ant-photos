@@ -8,7 +8,7 @@ import {useMutation} from '@apollo/react-hooks';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const updatePhotoMutation = gql`
-    mutation UpdatePhoto($id: ID!, $caption: String!, $albumId: ID) {
+    mutation UpdatePhoto($id: ID!, $caption: String, $albumId: ID) {
         updatePhoto(id: $id, input: {caption: $caption, albumId: $albumId}) {
             id
             caption

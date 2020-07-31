@@ -51,7 +51,7 @@ const graphQLTypes = gql`
     }
 
     input PhotoInput {
-        caption: String!
+        caption: String
         albumId: ID
     }
 

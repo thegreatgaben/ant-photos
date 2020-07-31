@@ -80,14 +80,11 @@ class PhotoAPI extends DataSource {
             const albumPhotoCount = await photoAlbumDataSource.countPhotos(attributes.albumId);
 
             // Make the photo the default cover photo for the empty album its being moved to
-            if (albumPhotoCount == 0) 
-                attributes.isCoverPhoto = true;
+            attributes.isCoverPhoto = albumPhotoCount == 0;
 
-            // If moving to a non-empty album AND the photo was a cover photo in a previous album, unset it 
-            else if (oldPhoto.albumId && oldPhoto.isCoverPhoto) {
+            // If the photo was a cover photo in a previous album, unset it 
+            if (oldPhoto.albumId && oldPhoto.isCoverPhoto)
                 isOldCoverPhoto = true;
-                attributes.isCoverPhoto = false;
-            }
         }
 
         await this.store.Photo.update(attributes, options);
