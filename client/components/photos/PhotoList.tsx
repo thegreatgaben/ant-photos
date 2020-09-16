@@ -6,6 +6,7 @@ import EditPhotoForm from './EditPhotoForm';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import {GetPaginatedPhotoList_photoList_photos} from '../types/GetPaginatedPhotoList';
 
 const updatePhotoMutation = gql`
     mutation UpdatePhoto($id: ID!, $caption: String, $albumId: ID) {
@@ -24,7 +25,8 @@ const deletePhotoMutation = gql`
 
 export default function PhotosList({ photoListResponse, fetchQueries, fetchMore }) {
     const [showPhotoModal, setShowPhotoModal] = useState(false);
-    const [photoToShow, setPhotoToShow] = useState({});
+    // @ts-ignore
+    const [photoToShow, setPhotoToShow] = useState<GetPaginatedPhotoList_photoList_photos>({});
     const [updatePhoto] = useMutation(updatePhotoMutation, {
         refetchQueries: fetchQueries,
         onCompleted: () => {

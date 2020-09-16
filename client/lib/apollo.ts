@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 export function createApolloClient() {
     return new ApolloClient({
         // @ts-ignore
-        link: createUploadLink({ uri: 'http://localhost:4000/graphql', fetch }),
+        link: createUploadLink({ uri: process.env.API_URL, fetch }),
         cache: new InMemoryCache(),
     });
 }
