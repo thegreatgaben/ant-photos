@@ -4,9 +4,9 @@ import {createApolloClient} from '../lib/apollo';
 
 import '../styles/global.css'
 
-const client = createApolloClient();
+export default function App({ Component, pageProps }) {     
+    const client = createApolloClient(pageProps.apiUrl);
 
-export default function App({ Component, pageProps }) {
     return (
         <ApolloProvider client={client}>
             <AppLayout>

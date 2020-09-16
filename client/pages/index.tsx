@@ -13,6 +13,12 @@ import { UploadPhotos, UploadPhotos_uploadPhotos } from '../components/photos/ty
 
 const { RangePicker } = DatePicker;
 
+export async function getStaticProps() {
+    return {
+        props: { apiUrl: process.env.NEXT_PUBLIC_API_URL }
+    };
+}
+
 export default function Home() {
     const router = useRouter();
     const { startDate, endDate }: GetPaginatedPhotoListVariables = router.query;
