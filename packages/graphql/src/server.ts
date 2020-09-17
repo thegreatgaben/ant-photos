@@ -1,9 +1,7 @@
 require('dotenv').config();
 
 import { ApolloServer } from 'apollo-server-express';
-import express from 'express';
 import path from 'path';
-import cors from 'cors';
 
 import database from '../models';
 import typeDefs from './schema';
@@ -38,13 +36,5 @@ const server = new ApolloServer({
         reportSchema: process.env.APOLLO_KEY ? true : false,
     },
 });
-const app = express();
-app.use(cors());
-app.use('/photos', express.static(uploadPath.absolute));
-server.applyMiddleware({ app });
 
-const port = process.env.APP_PORT;
-app.listen(port, () => {
-    console.log(`Server ready at http://localhost:${port}`);
-});
-
+export default server;

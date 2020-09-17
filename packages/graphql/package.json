@@ -1,8 +1,8 @@
 {
-  "name": "server",
+  "name": "@ant-photos/graphql",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",

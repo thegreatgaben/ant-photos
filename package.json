@@ -1,0 +1,25 @@
+{
+  "name": "ant-photos",
+  "version": "1.0.0",
+  "description": "An attempt to make an application similar to Google Photos, but a much watered down version, using Ant Design React UI Framework, Next.js, GraphQL and Node.js. This project was initially done as part of a job application to a particular company.",
+  "scripts": {
+    "build": "yarn workspace @ant-photos/client run build",
+    "start": "yarn workspace @ant-photos/server run start",
+    "dev": "export $(cat .env | xargs) && yarn workspace @ant-photos/server run dev"
+  },
+  "private": true,
+  "workspaces": ["packages/*"],
+  "resolutions": {
+    "graphql-upload": "^11.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/TheGreatGaben/ant-photos.git"
+  },
+  "author": "Gabriel Derek Tan (gabrieltan19@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/TheGreatGaben/ant-photos/issues"
+  },
+  "homepage": "https://gitlab.com/TheGreatGaben/ant-photos#readme"
+}
