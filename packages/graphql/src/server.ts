@@ -23,7 +23,8 @@ const server = new ApolloServer({
     context: ({ req }) => {
         const hostname = (req.headers && req.headers.host) || '';
         let serverBaseUrl = '';
-        if (hostname.length > 0) serverBaseUrl = `${req.protocol}://${hostname}`;
+	const protocol = process.env.HTTPS ? 'https' : req.protocol;
+        if (hostname.length > 0) serverBaseUrl = `${protocol}://${hostname}`;
         return { uploadPath, serverBaseUrl };
     },
     typeDefs,
