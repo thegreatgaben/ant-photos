@@ -28,3 +28,23 @@ img {
   max-width: 100%;
   display: block;
 }
+
+@media (max-width: 420px) {
+    /* An attempt to make Ant Design date range 
+     * picker more responsive for mobile */
+    .ant-picker-range-wrapper {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .ant-picker-panels {
+        flex-wrap: wrap !important;
+    }
+    .ant-picker-date-panel {
+        width: 100% !important;
+    }
+
+    .ant-picker-content {
+        width: 100% !important;
+    }
+}
