@@ -1,4 +1,4 @@
-@import '~bootstrap/dist/css/bootstrap.min.css';
+@import './utils.css';
 @import '~antd/dist/antd.css';
 
 html,
