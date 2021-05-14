@@ -33,4 +33,5 @@ export interface GetPaginatedPhotoListVariables {
   albumId?: string | null;
   startDate?: string | null;
   endDate?: string | null;
+  favorite?: boolean | null;
 }

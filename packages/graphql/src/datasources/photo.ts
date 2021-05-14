@@ -33,7 +33,6 @@ class PhotoAPI extends DataSource {
     }
 
     async getAll(query: PhotosRequestQuery) {
-        console.log(query)
         let options: {[key: string]: any} = {
             order: [
                 ['id', 'DESC']  

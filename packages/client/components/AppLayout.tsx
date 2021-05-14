@@ -1,6 +1,6 @@
 import {Layout, Menu} from 'antd';
 import { useState } from 'react';
-import {FileImageOutlined, FolderOpenOutlined} from '@ant-design/icons';
+import {FileImageOutlined, FolderOpenOutlined, StarOutlined} from '@ant-design/icons';
 
 import style from './AppLayout.module.scss';
 import {useRouter} from 'next/router';
@@ -11,8 +11,13 @@ export default function AppLayout({ children }) {
     const router = useRouter();
     const [showMask, setShowMask] = useState(false);
 
-    let selectedMenuItem = ['1'];
-    if (router.pathname.includes('/albums')) selectedMenuItem = ['2'];
+    const pathnameSelectedMenuItemMap = {
+        '/': ['1'],
+        '/favorites': ['2'],
+        '/albums': ['3'],
+        '/albums/[id]': ['3']
+    }
+    const selectedMenuItem = pathnameSelectedMenuItemMap[router.pathname]
 
     return (
         <Layout className={style.layout}>
@@ -38,7 +43,10 @@ export default function AppLayout({ children }) {
                     <Menu.Item key="1" icon={<FileImageOutlined/>} onClick={() => router.push('/')}>
                         Photos
                     </Menu.Item>
-                    <Menu.Item key="2" icon={<FolderOpenOutlined/>} onClick={() => router.push('/albums')}>
+                    <Menu.Item key="2" icon={<StarOutlined/>} onClick={() => router.push('/favorites')}>
+                        Favorites
+                    </Menu.Item>
+                    <Menu.Item key="3" icon={<FolderOpenOutlined/>} onClick={() => router.push('/albums')}>
                         Albums
                     </Menu.Item>
                 </Menu>
