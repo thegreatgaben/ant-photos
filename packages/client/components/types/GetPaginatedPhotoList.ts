@@ -15,6 +15,7 @@ export interface GetPaginatedPhotoList_photoList_photos {
   url: string;
   caption: string | null;
   albumId: string | null;
+  favorite: boolean | null;
 }
 
 export interface GetPaginatedPhotoList_photoList {
