@@ -23,6 +23,7 @@ const graphQLTypes = gql`
         url: String!
         caption: String
         albumId: ID
+        favorite: Boolean
     }
 
     type PhotoConnection {
@@ -42,6 +43,7 @@ const graphQLTypes = gql`
             albumId: ID
             startDate: String
             endDate: String
+            favorite: Boolean
         ): PhotoConnection!
     }
 

@@ -8,6 +8,7 @@ const { DataSource } = require('apollo-datasource');
 
 interface PhotosRequestQuery extends RequestQuery {
     albumId?: string;
+    favorite?: boolean;
 }
 
 class PhotoAPI extends DataSource {
@@ -32,6 +33,7 @@ class PhotoAPI extends DataSource {
     }
 
     async getAll(query: PhotosRequestQuery) {
+        console.log(query)
         let options: {[key: string]: any} = {
             order: [
                 ['id', 'DESC']  
@@ -45,6 +47,7 @@ class PhotoAPI extends DataSource {
                 endDate.getDate(), 23, 59, 59
             );
             options.where = {
+                ...options.where,
                 createdAt: {
                     [SQL.between]: [startDate, trueEndDate]
                 }
@@ -52,7 +55,14 @@ class PhotoAPI extends DataSource {
         }
         if (query.albumId) {
             options.where = {
+                ...options.where,
                 albumId: query.albumId,
+            }
+        }
+        if (query.favorite) {
+            options.where = {
+                ...options.where,
+                favorite: query.favorite
             }
         }
         let results = null;

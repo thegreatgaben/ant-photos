@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     caption: DataTypes.STRING,
     albumId: DataTypes.INTEGER,
     isCoverPhoto: DataTypes.BOOLEAN,
+    favorite: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Photo',
