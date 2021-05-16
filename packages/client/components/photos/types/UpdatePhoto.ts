@@ -11,6 +11,8 @@ export interface UpdatePhoto_updatePhoto {
   __typename: "Photo";
   id: string;
   caption: string | null;
+  albumId: string | null;
+  favorite: boolean | null;
 }
 
 export interface UpdatePhoto {
@@ -21,4 +23,5 @@ export interface UpdatePhotoVariables {
   id: string;
   caption?: string | null;
   albumId?: string | null;
+  favorite?: boolean | null;
 }
