@@ -8,6 +8,7 @@ import schema from './gqlTypes'
 
 import PhotoAlbumAPI from './datasources/photoalbum';
 import PhotoAPI from './datasources/photo';
+import UserDataSource from './datasources/user'
 import {existsSync, mkdirSync} from 'fs';
 
 const uploadPath = {
@@ -29,6 +30,7 @@ const server = new ApolloServer({
     dataSources: () => ({
         photoAlbumAPI: new PhotoAlbumAPI(database),
         photoAPI: new PhotoAPI(database),
+        user: new UserDataSource(database)
     }),
     engine: {
         reportSchema: process.env.APOLLO_KEY ? true : false,

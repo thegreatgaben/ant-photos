@@ -1,6 +1,7 @@
-import { Form, Input, Button } from 'antd'
+import { message, Form, Input, Button } from 'antd'
 import { useMutation } from '@apollo/react-hooks'
 import { registerUserMutation } from './gql/RegisterForm'
+import { RegisterUserVariables } from './gql/types/RegisterUser'
 
 const formItemLayout = {
     labelCol: {
@@ -36,10 +37,17 @@ const tailFormItemLayout = {
 
 export default function RegisterForm() {
     const [form] = Form.useForm();
-    const [registerUser] = useMutation(registerUserMutation)
+    const [registerUser] = useMutation(registerUserMutation, {
+        onCompleted() {
+            message.success('Registered successfully!')
+            // redirect to login
+        },
+        onError(error) {
+            message.error(error.message)
+        }
+    })
 
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+    const onFinish = (values: RegisterUserVariables) => {
         registerUser({ variables: { ...values } })
     };
 
