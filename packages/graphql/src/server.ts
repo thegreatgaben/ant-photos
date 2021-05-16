@@ -4,8 +4,7 @@ import { ApolloServer } from 'apollo-server-express';
 import path from 'path';
 
 import database from '../models';
-import typeDefs from './schema';
-import resolvers from './resolvers';
+import schema from './gqlTypes'
 
 import PhotoAlbumAPI from './datasources/photoalbum';
 import PhotoAPI from './datasources/photo';
@@ -27,8 +26,6 @@ const server = new ApolloServer({
         if (hostname.length > 0) serverBaseUrl = `${protocol}://${hostname}`;
         return { uploadPath, serverBaseUrl };
     },
-    typeDefs,
-    resolvers,
     dataSources: () => ({
         photoAlbumAPI: new PhotoAlbumAPI(database),
         photoAPI: new PhotoAPI(database),
@@ -36,6 +33,7 @@ const server = new ApolloServer({
     engine: {
         reportSchema: process.env.APOLLO_KEY ? true : false,
     },
+    schema
 });
 
 export default server;

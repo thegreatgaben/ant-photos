@@ -18,8 +18,8 @@ async function main() {
     const uploadPath = path.join(__dirname, '../graphql/public/photos');
     app.use('/photos', express.static(uploadPath));
 
-    await bootstrapNextApp(app);
     await bootstrapApolloServer(app);
+    await bootstrapNextApp(app);
 
     const port = process.env.APP_PORT;
     app.listen(port, () => {

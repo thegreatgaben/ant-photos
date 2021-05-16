@@ -1,15 +1,57 @@
-import { PaginationResponse, UploadedFiles, PhotoMeta } from '../types/index.d';
-import {handleFileUpload} from './utils';
+import { gql } from 'apollo-server-express'
+import { PaginationResponse, UploadedFiles, PhotoMeta } from '../../types/index.d'
+import { handleFileUpload } from '../utils'
 
-export default {
+export const typeDef = gql`
+    type Photo {
+        id: ID!
+        filename: String!
+        filepath: String!
+        filesize: Int
+        disk: String!
+        mimetype: String!
+        url: String!
+        caption: String
+        albumId: ID
+        favorite: Boolean
+    }
+
+    type PhotoConnection {
+        cursor: String!
+        photos: [Photo]!
+    }
+
+    extend type Query {
+        photoList(
+            pageSize: Int
+            after: String
+            albumId: ID
+            startDate: String
+            endDate: String
+            favorite: Boolean
+        ): PhotoConnection!
+    }
+
+    input PhotoInput {
+        caption: String
+        albumId: ID
+        favorite: Boolean
+    }
+
+    type PhotoUploadedResponse {
+        filename: String!
+        uploaded: Boolean!
+    }
+
+    extend type Mutation {
+        uploadPhotos(files: [Upload]!, albumId: ID): [PhotoUploadedResponse]
+        updatePhoto(id: ID!, input: PhotoInput!): Photo
+        deletePhoto(id: ID): Boolean
+    }
+`
+
+export const resolvers = {
     Query: {
-        photoAlbumList: async (_, query, { dataSources }) => {
-            const result: PaginationResponse = await dataSources.photoAlbumAPI.getAll(query);
-            return {
-                cursor: result.cursor,
-                albums: result.paginatedList,
-            };
-        },
         photoList: async (_, query, { dataSources }) => {
             const result: PaginationResponse = await dataSources.photoAPI.getAll(query);
             return {
@@ -19,27 +61,6 @@ export default {
         }
     },
     Mutation: {
-        createPhotoAlbum: async (_, { input }, { dataSources }) => {
-            const photoAlbum = await dataSources.photoAlbumAPI.create(input);
-            return {
-                id: photoAlbum.id,
-                name: photoAlbum.name,
-                description: photoAlbum.description,
-            }
-        },
-        updatePhotoAlbum: async (_, { id, input }, { dataSources }) => {
-            const photoAlbum = await dataSources.photoAlbumAPI.update(id, input);
-            return {
-                id: photoAlbum.id,
-                name: photoAlbum.name,
-                description: photoAlbum.description,
-            }
-        },
-        deletePhotoAlbum: async (_, { id, deletePhotos }, { dataSources }) => {
-            const result = await dataSources.photoAlbumAPI.delete(id, deletePhotos);
-            return result
-        }, 
-
         updatePhoto: async (_, { id, input }, { dataSources }) => {
             const photo = await dataSources.photoAPI.update(id, input, dataSources.photoAlbumAPI);
             return photo;
@@ -85,5 +106,5 @@ export default {
 
             return response;
         }
-    },
-};
+    }
+}
