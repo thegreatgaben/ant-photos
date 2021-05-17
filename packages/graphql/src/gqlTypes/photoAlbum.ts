@@ -1,5 +1,6 @@
 import { gql } from 'apollo-server-express';
 import { PaginationResponse } from '../../types/index.d'
+import { isAuthenticated } from '../auth/rules'
 
 export const typeDef = gql`
     type PhotoAlbum {
@@ -33,6 +34,17 @@ export const typeDef = gql`
         deletePhotoAlbum(id: ID!, deletePhotos: Boolean): Boolean
     }
 `
+
+export const permissions = {
+    Query: {
+        photoAlbumList: isAuthenticated
+    },
+    Mutation: {
+        createPhotoAlbum: isAuthenticated,
+        updatePhotoAlbum: isAuthenticated,
+        deletePhotoAlbum: isAuthenticated
+    }
+}
 
 export const resolvers = {
     Query: {

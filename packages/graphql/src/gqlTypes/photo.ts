@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server-express'
 import { PaginationResponse, UploadedFiles, PhotoMeta } from '../../types/index.d'
 import { handleFileUpload } from '../utils'
+import { isAuthenticated } from '../auth/rules'
 
 export const typeDef = gql`
     type Photo {
@@ -49,6 +50,17 @@ export const typeDef = gql`
         deletePhoto(id: ID): Boolean
     }
 `
+
+export const permissions = {
+    Query: {
+        photoList: isAuthenticated
+    },
+    Mutation: {
+        updatePhoto: isAuthenticated,
+        deletePhoto: isAuthenticated,
+        uploadPhotos: isAuthenticated
+    }
+}
 
 export const resolvers = {
     Query: {
