@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
             }
         });
+        Photo.belongsToMany(models.User,  {
+            through: 'UserPhoto'
+        })
     }
   };
   Photo.init({
