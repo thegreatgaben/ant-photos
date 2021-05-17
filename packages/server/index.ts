@@ -1,4 +1,5 @@
 import express from 'express';
+import expressJwt from 'express-jwt'
 import path from 'path';
 
 import nextApp from '@ant-photos/client';
@@ -15,6 +16,12 @@ async function bootstrapApolloServer(expressApp) {
 
 async function main() {
     const app = express();
+    app.use(expressJwt({
+        secret: process.env.JWT_SECRET,
+        algorithms: ['HS256'],
+        credentialsRequired: false
+    }))
+
     const uploadPath = path.join(__dirname, '../graphql/public/photos');
     app.use('/photos', express.static(uploadPath));
 

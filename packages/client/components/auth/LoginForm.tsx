@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/react-hooks'
 import { useRouter } from 'next/router'
 import { loginUserMutation } from './gql/LoginForm'
 import { LoginUser, LoginUserVariables } from './gql/types/LoginUser'
-import { setAccessToken } from './util'
+import { setAccessToken } from './utils'
 
 const formItemLayout = {
     labelCol: {

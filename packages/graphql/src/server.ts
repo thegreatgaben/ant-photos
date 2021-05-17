@@ -25,7 +25,10 @@ const server = new ApolloServer({
         let serverBaseUrl = '';
 	const protocol = process.env.HTTPS ? 'https' : req.protocol;
         if (hostname.length > 0) serverBaseUrl = `${protocol}://${hostname}`;
-        return { uploadPath, serverBaseUrl };
+
+        // @ts-ignore
+        const user = req.user || null
+        return { uploadPath, serverBaseUrl, user };
     },
     dataSources: () => ({
         photoAlbumAPI: new PhotoAlbumAPI(database),
