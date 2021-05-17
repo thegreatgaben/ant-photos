@@ -1,7 +1,8 @@
-import { ApolloClient, InMemoryCache } from '@apollo/react-hooks';
+import { ApolloClient, InMemoryCache, from } from '@apollo/react-hooks';
 import { createUploadLink } from 'apollo-upload-client';
 import fetch from 'node-fetch';
 import { setContext } from '@apollo/client/link/context'
+import { onError, ErrorHandler } from '@apollo/client/link/error'
 import { getAccessToken } from '../components/auth/utils'
 
 const authLink = setContext((_, { headers }) => {
@@ -14,10 +15,10 @@ const authLink = setContext((_, { headers }) => {
     }
 })
 
-export function createApolloClient(apiUrl) {
+export function createApolloClient(apiUrl: string, errorHandler: ErrorHandler) {
     return new ApolloClient({
         // @ts-ignore
-        link: authLink.concat(createUploadLink({ uri: apiUrl, fetch })),
+        link: from([onError(errorHandler), authLink, createUploadLink({ uri: apiUrl, fetch })]),
         cache: new InMemoryCache(),
     });
 }
