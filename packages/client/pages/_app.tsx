@@ -8,7 +8,7 @@ import '../styles/global.css'
 export default function App({ Component, pageProps }) {     
     const client = createApolloClient(pageProps.apiUrl);
     const router = useRouter()
-    const authPathnames = ['/register']
+    const authPathnames = ['/register', '/login']
 
     return (
         <ApolloProvider client={client}>

@@ -1,8 +1,9 @@
 import { message, Form, Input, Button } from 'antd'
 import { useMutation } from '@apollo/react-hooks'
 import { useRouter } from 'next/router'
-import { registerUserMutation } from './gql/RegisterForm'
-import { RegisterUserVariables } from './gql/types/RegisterUser'
+import { loginUserMutation } from './gql/LoginForm'
+import { LoginUser, LoginUserVariables } from './gql/types/LoginUser'
+import { setAccessToken } from './util'
 
 const formItemLayout = {
     labelCol: {
@@ -36,22 +37,24 @@ const tailFormItemLayout = {
     },
 };
 
-export default function RegisterForm() {
+export default function LoginForm() {
     const [form] = Form.useForm()
     const router = useRouter()
 
-    const [registerUser] = useMutation(registerUserMutation, {
-        onCompleted() {
-            message.success('Registered successfully!')
-            router.push('/login')
+    const [loginUser] = useMutation(loginUserMutation,  {
+        onCompleted(data: LoginUser) {
+            const { accessToken } = data.loginUser
+            setAccessToken(accessToken)
+            message.success('Login successful.')
+            router.push('/')
         },
         onError(error) {
             message.error(error.message)
         }
     })
 
-    const onFinish = (values: RegisterUserVariables) => {
-        registerUser({ variables: { ...values } })
+    const onFinish = (values: LoginUserVariables) => {
+        loginUser({ variables: { ...values } })
     }
 
     return (
@@ -62,19 +65,6 @@ export default function RegisterForm() {
             onFinish={onFinish}
             scrollToFirstError
         >
-            <Form.Item
-                name="name"
-                label="Name"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your name!',
-                    },
-                ]}
-            >
-                <Input />
-            </Form.Item>
-
             <Form.Item
                 name="email"
                 label="E-mail"
@@ -102,30 +92,6 @@ export default function RegisterForm() {
                     },
                 ]}
                 hasFeedback
-            >
-                <Input.Password />
-            </Form.Item>
-
-            <Form.Item
-                name="confirmPassword"
-                label="Confirm Password"
-                dependencies={['password']}
-                hasFeedback
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please confirm your password!',
-                    },
-                    ({ getFieldValue }) => ({
-                        validator(_, value) {
-                            if (!value || getFieldValue('password') === value) {
-                                return Promise.resolve();
-                            }
-
-                            return Promise.reject(new Error('The two passwords that you entered do not match!'));
-                        },
-                    }),
-                ]}
             >
                 <Input.Password />
             </Form.Item>
