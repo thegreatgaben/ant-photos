@@ -9,6 +9,7 @@ import '../styles/global.css'
 export default function App({ Component, pageProps }) {     
     const router = useRouter()
     const client = createApolloClient(pageProps.apiUrl, ({ graphQLErrors, networkError }) => {
+        // TODO: What about when the token expires?
         if (graphQLErrors.length > 0 && graphQLErrors[0].message === 'Not Authorised!') {
             message.error(graphQLErrors[0].message)
             router.push('/login')
